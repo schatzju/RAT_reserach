@@ -1,0 +1,38 @@
+smem --add {
+	(<car> ^word car)
+	(<cir> ^word circle)
+	(<tri> ^word triangle)
+	(<oval> ^word oval)
+	(<tire> ^word tire)
+	(<shape> ^word shape)
+	(<thing> ^word thing)
+	(<rand> ^word rand)
+	
+	(<car> ^assoc <tire> (10.0))
+	(<tire> ^assoc <car> (10.0))
+	
+	(<cir> ^assoc <tire> (10.0))
+	(<tire> ^assoc <cir> (10.0))
+
+	(<cir> ^assoc <shape> (10.0))
+	(<shape> ^assoc <cir> (10.0))
+
+	(<tri> ^assoc <shape> (10.0))
+	(<shape> ^assoc <tri> (10.0))
+
+	(<thing> ^assoc <cir> (1000.0))
+	(<cir> ^assoc <thing> (1000.0))
+
+	(<thing> ^assoc <car> (10.0))
+	(<car> ^assoc <thing> (10.0))
+
+	(<thing> ^assoc <tri> (10.0))
+	(<tri> ^assoc <thing> (10.0))
+
+	(<oval> ^assoc <cir> (10.0))
+	(<cir> ^assoc <oval> (10.0))
+
+	(<oval> ^assoc <shape> (10.0))
+	(<shape> ^assoc <oval> (10.0))
+
+}

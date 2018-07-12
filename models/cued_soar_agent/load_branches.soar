@@ -1,0 +1,107 @@
+sp {elaborate*fill_branches_phase
+(state <s> ^type state
+			^name RAT
+			^role solver
+			-^phase load_cards
+			^branch <branch2A>)
+(<branch2A> ^id 2A
+	      ^number 2)
+-->
+(<s> ^phase fill_branches)
+}
+
+sp {propose*operator*fill_two_A_branch
+(state <s> ^type state
+			^phase fill_branches
+			^branch <branch>
+			^branch <branch2A>)
+(<branch2A> ^id 2A)
+(<branch> ^number 3
+		^elements <elems>)
+(<elems> ^assoc <card1>)
+(<elems> ^assoc { <card2> <> <card1> })
+-->
+(<s> ^operator <o> + =)
+(<o> ^name fill_two_A_branch
+	^card1 <card1>
+	^card2 <card2>)
+}
+
+sp {apply*operator*fill_two_A_branch
+(state <s> ^type state
+			^phase fill_branches
+			^operator <o>
+			^branch <branchA>
+			^branch <branchB>
+			^branch <branchC>)
+(<branchA> ^id 2A
+		^number <count>
+		^elements <elemsA>)
+(<branchB> ^elements <elemsB>
+			^id 2B)
+(<branchC> ^elements <elemsC>
+			^id 2C)
+(<o> ^name fill_two_A_branch
+	^card1 <card1>
+	^card2 <card2>)
+-->
+(<elemsA> ^assoc <card1>)
+(<elemsA> ^assoc <card2>)
+(<elemsB> ^assoc <card1>)
+(<elemsC> ^assoc <card2>)
+(<branchA> ^number <count> - )
+}
+
+sp {elaborate*fill_branches_last_phase
+(state <s> ^type state
+			^name RAT
+			^role solver
+			-^phase load_cards
+			-^phase fill_branches
+			^branch <branch2C>)
+(<branch2C> ^id 2C
+	      ^number 2)
+-->
+(<s> ^phase fill_branches_last)
+}
+
+
+sp {propose*operator*fill_last
+(state <s> ^type state
+			^phase fill_branches_last
+			^branch <branch>
+			^branch <branch2A>)
+(<branch2A> ^id 2A
+	-^elements.assoc <card1>)
+(<branch> ^elements.assoc <card1>
+		^number 3)
+-->
+(<s> ^operator <o> + =)
+(<o> ^name fill_last
+	^card1 <card1>)
+}
+
+sp {apply*operator*fill_last
+(state <s> ^type state
+			^phase fill_branches_last
+			^operator <o>
+			^branch <branch2B>
+			^branch <branch2C>)
+(<branch2B> ^id 2B
+			^elements <elemsB>)
+(<branch2C> ^id 2C
+			^number <count>
+			^elements <elemsC>)
+(<o> ^name fill_last
+	^card1 <card1>)
+-->
+(<elemsB> ^assoc <card1>)
+(<elemsC> ^assoc <card1>)
+(<branch2C> ^number <count> - )
+}
+
+
+
+
+
+

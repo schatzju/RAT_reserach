@@ -1,0 +1,105 @@
+sp {propose*operator*prune_failures
+(state <s2> ^type state
+			^superstate <s>
+			^branch <branch_a>)
+(<branch_a> ^elements <elem_a>)
+(<s> ^name codeNames
+	^role clue_giver
+	^branch <branch_b>)
+(<branch_b> ^status failure
+			^elements <elem_b>)
+-{(<elem_b> ^assoc <lti>)
+	(<elem_a> -^assoc <lti>)}
+-->
+(<s2> ^operator <o> + =)
+(<o> ^name prune
+	^branch_r <branch_a>
+	^branch_k <branch_b>)
+}
+
+sp {propose*operator*prune_duplicates
+(state <s2> ^type state
+		^superstate <s>
+		-^phase <pha>
+		^branch <branch_b>
+		^branch{ <branch_a> <> <branch_b> })
+(<s> ^name codeNames
+	^role clue_giver)
+(<branch_b> ^elements <elem_b>)
+(<branch_a> ^elements <elem_a>)
+-{(<elem_b> ^assoc <lti>)
+	(<elem_a> -^assoc <lti>)}
+-{(<elem_a> ^assoc <lti2>)
+	(<elem_b> -^assoc <lti2>)}
+-->
+(<s2> ^operator <o> + =)
+(<o> ^name prune
+	^branch_r <branch_b>
+	^branch_k <branch_a>)
+}
+
+sp {propose*operator*prune_duplicates_super
+(state <s2> ^type state
+		^superstate <s>
+		-^phase <pha>
+		^branch <branch_b>)
+(<s> ^name codeNames
+	^role clue_giver
+	^branch <branch_a>)
+(<branch_b> ^elements <elem_b>)
+(<branch_a> ^elements <elem_a>)
+-{(<elem_b> ^assoc <lti>)
+	(<elem_a> -^assoc <lti>)}
+-{(<elem_a> ^assoc <lti2>)
+	(<elem_b> -^assoc <lti2>)}
+-->
+(<s2> ^operator <o> + =)
+(<o> ^name prune
+	^branch_r <branch_b>
+	^branch_k <branch_a>)
+}
+
+sp {apply*operator*prune_duplicates
+(state <s2> ^type state
+			^superstate <s>
+			^operator <o>
+			^branch <branch_remove>)
+(<s> ^name codeNames
+	^role clue_giver)
+(<o> ^name prune
+	^branch_r <branch_remove>
+	^branch_k <branch_keep>)
+ -->
+(<s2> ^branch <branch_remove> -)
+}
+
+sp {propose*operator*prune_finished
+(state <s3> ^type state
+		^superstate <s2>)
+(<s2> ^superstate <s>)
+(<s> ^name codeNames
+	^role clue_giver)
+-->
+(<s3> ^operator <o> + =)
+(<o> ^name done_pruning)
+}
+
+sp {apply*operator*prune_finished
+(state <s3> ^type state
+			^superstate <s2>
+			^operator <o>)
+(<o> ^name done_pruning)
+ -->
+(<s2> ^pruned <x> )
+}
+
+
+sp {prefrence*select_operator_remove_duplicates
+(state <s> ^type state
+			^name codeNames
+			^role clue_giver
+			^operator <o> +)
+(<o> ^name remove_duplicate)
+-->
+(<s> ^operator <o> =)
+}

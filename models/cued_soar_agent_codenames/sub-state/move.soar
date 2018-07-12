@@ -1,0 +1,95 @@
+sp {elaborate*query_clue_phase_sub
+(state <s> ^type state
+			^pruned <x>
+			^branch <branch>)
+(<branch> -^status <res>)
+-->
+(<s> ^phase query_branch)
+}
+
+sp {elaborate*moving_phase
+(state <s2> ^type state
+			^superstate <s>
+			^branch <branch>
+			-^phase query_branch)
+(<s> ^name codeNames
+	^role clue_giver)
+(<branch> ^status <x>)
+-->
+(<s2> ^phase moving)
+}
+
+sp {propose*operator*all_failed
+(state <s2> ^type state
+			^superstate <s>
+			^branch <branch>
+			^phase moving)
+(<s> ^name codeNames
+	^role clue_giver)
+-(<branch> ^status success
+			^result <res>)
+-->
+(<s2> ^operator <o> + =)
+(<o> ^name all_failed)
+}
+
+sp {propose*operator*all_failed_nothing
+(state <s2> ^type state
+			^superstate <s>
+			-^branch <branch>
+			-^phase
+			^grouped <x>)
+(<s> ^name codeNames
+	^role clue_giver)
+-->
+(<s2> ^operator <o> + =)
+(<o> ^name all_failed)
+}
+
+sp {apply*operator*all_failed
+(state <s2> ^type state
+			^superstate <s>
+			^operator <o>)
+(<o> ^name all_failed)
+(<s> ^name codeNames
+	^role clue_giver
+    ^highest_clue <big-count>)
+-->
+(<s> ^max <big-count>)
+}
+
+sp {propose*operator*move_all
+(state <s2> ^type state
+			^superstate <s>
+			^branch <branch>
+			^phase moving)
+(<s> ^name codeNames
+	^role clue_giver)
+(<branch> ^status success)
+-->
+(<s2> ^operator <o> + > =)
+(<o> ^name move_all)
+}
+
+sp {apply*operator*move_all
+(state <s2> ^type state
+			^superstate <s>
+			^operator <o>
+			^branch <branch>)
+(<branch> ^elements <elements>)
+(<o> ^name move_all)
+(<s> ^name codeNames
+	^role clue_giver
+	^operator <o2>)
+-->
+(<s> ^branch <branch>
+	^highest_clue ( size <elements>) )
+}
+
+
+
+
+
+
+
+

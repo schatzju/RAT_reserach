@@ -1,0 +1,47 @@
+sp {propose*initialize-codeNames-clueGiver
+(state <s> ^type state
+			^superstate nil 
+          -^name codeNames)
+-->
+(<s> ^operator <o> +)
+(<o> ^name codeNames
+	^role clue_giver)
+}
+
+sp {apply*initialize-codeNames-clueGiver
+(state <s> ^operator <o>)
+	(<o> ^name codeNames
+		^role <role>)
+-->
+(<s> ^name codeNames
+	^role <role>
+	^iox <iox>
+	^goal-num 3
+	^attempts 0)
+(<iox> ^input-link <in>)
+(<in> ^board <board>
+	^max-attempts <max>)
+(<max> ^num 15)
+
+(<board> ^card <card1>)
+(<card1> ^word cdottage)
+(<board> ^card <card3>)
+(<card3> ^word swiss)
+(<board> ^card <card4>)
+ (<card4> ^word cake)
+# (<board> ^card <card5>)
+# (<card5> ^word sub)
+# (<board> ^card <card6>)
+# (<card6> ^word tick)
+# (<board> ^card <card7>)
+# (<card7> ^word card)
+# (<board> ^card <card8>)
+# (<card8> ^word dance)
+# (<board> ^card <card9>)
+# (<card9> ^word bug)
+#(<board> ^card <card10>)
+#(<card10> ^word space
+#			^neg <neg>)
+
+(write |Initialized|)
+}

@@ -1,0 +1,8 @@
+sp {elaborate*fill_branches_phase
+(state <s> ^type state
+			^name RAT
+			^role solver
+			^branch.count 2)
+-->
+(<s> ^phase fill_branches)
+}

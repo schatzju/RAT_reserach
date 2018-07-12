@@ -1,0 +1,239 @@
+sp {propose*operator*get_input
+(state <s> ^type state
+			^name codeNames
+			^role clue_giver
+			^io.input-link.board <board>
+			^io.input-link.max-attempts.num <max>
+			-^board <board1>)
+-->
+(<s> ^operator <o> + =)
+(<o> ^name get_input)
+}
+
+sp {apply*operator*get_input
+(state <s> ^type state
+			^operator <o>
+			^name codeNames
+			^role clue_giver
+			^io.input-link.board <board>
+			^io.input-link.max-attempts.num <max>
+			-^board <board1>)
+(<o> ^name get_input)
+-->
+(<s> ^board (deep-copy <board>)
+	^max-attempts <max>)
+}
+
+sp {elaborate*not_in_wm
+(state <s> ^type state
+			^name codeNames
+			^role clue_giver
+			^board.card <card>
+			-^branch.word <word>)
+(<card> ^word <word>)
+-->
+(<card> ^needs_retrieve <var>)
+}
+
+sp {elaborate*load_cards_phase
+(state <s> ^type state
+			^name codeNames
+			^role clue_giver
+			^board.card.needs_retrieve <var>)
+-->
+(<s> ^phase load_cards)
+}
+
+#if the board card isn't in working memory get clue from smem
+sp {propose*operator*board_query_cards
+(state <s> ^type state
+			^phase load_cards
+			^board.card <card>)
+(<card> ^needs_retrieve <x>
+		^word <word>)
+-->
+(<s> ^operator <o> + =)
+(<o> ^name query_card
+	^word <word>)
+}
+
+sp {apply*operator*query_cards
+(state <s> ^type state
+			^phase load_cards
+			^operator <o>
+			^smem.command <cmd>)
+(<o> ^name query_card
+	^word <word>)
+-->
+(<cmd> ^query <cue>)
+(<cue> ^word <word>)
+}
+
+#propose move board to working memory
+sp {propose*operator*unknown_word
+(state <s> ^type state
+			^phase load_cards
+			^smem.result.failure <fail>)
+-->
+(<s> ^operator <o> + >)
+(<o> ^name unknown_word)
+}
+
+sp {apply*operator*unknown_word
+(state <s> ^type state
+			^phase load_cards
+			^operator <o>
+			^smem.command <cmd>
+			^smem.result.failure.word <word>
+			^board <board>
+			^goal-num <num>)
+(<cmd> ^query <query>)
+(<query> ^word <word>)
+(<board> ^card <card>)
+(<card> ^word <word>)
+(<o> ^name unknown_word)
+-->
+(<cmd> ^query <query> -)
+(<board> ^card <card> -)
+(<s> ^goal-num (- <num> 1) )
+(<s> ^goal-num <num> -)
+}
+
+#propose move board to working memory
+sp {propose*operator*create_branch_initial
+(state <s> ^type state
+			^phase load_cards
+			^smem.result.success <succ>
+			^smem.result.retrieved.word <word>
+			^board.card <card>)
+(<card> ^word <word>)
+-->
+(<s> ^operator <o> + >)
+(<o> ^name create_branch_initial
+	^word <word>)
+}
+
+
+
+sp {apply*operator*create_branch_initial
+(state <s> ^type state
+			^phase load_cards
+			^operator <o>
+			^smem.command <cmd>
+			^smem <smem>
+			^board <board>
+			^smem.result.retrieved <retrieved>)
+(<retrieved> ^word <word>)
+(<board> ^card <card>)
+(<card> ^word <word>)
+(<o> ^name create_branch_initial
+	^word <word>)
+(<cmd> ^query <query>)
+(<query> ^word <word>)
+-->
+(<s> ^branch <branch>
+	^prohibit <retrieved>)
+(<branch> ^element <retrieved>
+			^word <word>)
+(<cmd> ^query <query> -)
+(<smem> ^command <cmd> -)
+}
+
+sp {apply*operator*create_branch_initial_neg
+(state <s> ^type state
+			^phase load_cards
+			^operator <o>
+			^smem.command <cmd>
+			^smem <smem>
+			^board <board>
+			^smem.result.retrieved <retrieved>)
+(<retrieved> ^word <word>)
+(<board> ^card <card>)
+(<card> ^word <word>
+		^neg <neg>)
+(<o> ^name create_branch_initial
+	^word <word>)
+(<cmd> ^query <query>)
+(<query> ^word <word>)
+-->
+(<s> ^branch <branch>
+	^prohibit <retrieved>)
+(<branch> ^element <retrieved>
+		^neg <neg>)
+(<cmd> ^query <query> -)
+(<smem> ^command <cmd> -)
+}
+
+sp {propose*operator*remove_neg_assoc
+(state <s> ^type state
+			^name codeNames
+			^role clue_giver
+			^board <board>
+			^branch <branch>)
+(<branch> ^element.assoc <assoc>
+			^neg <neg>)
+(<branch> ^element.word <word>)
+	-->
+(<s> ^operator <o> + > =)
+(<o> ^name remove_neg_assoc)
+}
+
+sp {apply*operator*remove_neg_assoc
+(state <s> ^type state
+			^name codeNames
+			^role clue_giver
+			^operator <o>
+			^board <board>
+			^branch <branch>)
+(<branch> ^element <element>
+			^neg <neg>)
+(<element> ^assoc <assoc>
+			^word <word>)
+(<o> ^name remove_neg_assoc)
+	-->
+(<element> ^assoc <assoc> -)
+(<branch> ^assoc <assoc>)
+}
+
+sp {apply*operator*remove_neg_assoc_word
+(state <s> ^type state
+			^name codeNames
+			^role clue_giver
+			^operator <o>
+			^board <board>
+			^branch <branch>)
+(<branch> ^element <element>
+			^neg <neg>)
+(<element> ^word <word>)
+(<o> ^name remove_neg_assoc)
+	-->
+(<element> ^word <word> -)
+(<branch> ^word <word>)
+}
+
+sp {prefrence*select_operator
+(state <s> ^type state
+			^name codeNames
+			^role clue_giver
+			^operator <o> +
+			-^operator <o>
+			^operator <o2>
+			^smem.result.success <succ>)
+(<o2> ^name board_smem_to_wmem)
+(<o> ^name query_card)
+-->
+(<s> ^operator <o> =)
+}
+
+sp {prefrence*select_operator_board
+(state <s> ^type state
+			^name codeNames
+			^role clue_giver
+			^operator <o> +
+			^operator <o2> +
+			^smem.result.success <succ>)
+(<o2> ^name board_smem_to_wmem)
+(<o> ^name board_smem_to_wmem)
+-->
+(<s> ^operator <o> =)
+}

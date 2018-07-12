@@ -1,0 +1,88 @@
+sp {propose*operator*result_attempts
+(state <s> ^type state
+			^name codeNames
+			^role clue_giver
+			^clue <clue>
+			^attempts <num>
+			^max-attempts <num>)
+-->
+(<s> ^operator <o> + > =)
+(<o> ^name result
+	^clue <clue>)
+}
+
+sp {propose*operator*result_goal
+(state <s> ^type state
+			^name codeNames
+			^role clue_giver
+			^clue <clue>
+			^goal-num <num_assoc>)
+(<clue> ^num_assoc <num_assoc>)
+-->
+(<s> ^operator <o> + > =)
+(<o> ^name result
+	^clue <clue>)
+}
+
+sp {apply*operator*result
+(state <s> ^type state
+			^name codeNames
+			^role clue_giver
+			^operator <o>
+			^attempts <attm>
+			^io <io>)
+(<io> ^output-link <out>)
+(<o> ^name result
+	^clue <clue>)
+(<clue> ^element <elem>
+		^num_assoc <num>
+		 ^word <word>)
+-->
+(<out> ^result <x>)
+(<x> ^word <word>
+	^num <num>
+	^attempts <attm>)
+(write <word> | attempts: | <attm> | connections: |<num> | solution: |)
+(<clue> ^picked <x>)
+}
+
+sp {elaborate*print_solution
+(state <s> ^type state
+			^name codeNames
+			^role clue_giver
+			^clue <clue>)
+(<clue> ^picked <x>
+			^connections <con>)
+(<con> ^word <word>)
+-->
+(write <word> | |)
+
+}
+
+sp {prefrence*select_operator_finish
+(state <s> ^type state
+			^name codeNames
+			^role clue_giver
+			^operator <o> +
+			^operator <o2> +)
+(<o2> ^name finished)
+-->
+(<s> ^operator <o2> > <o>)
+}
+
+
+sp {prefrence*select_operator_result
+(state <s> ^type state
+			^name codeNames
+			^role clue_giver
+			^operator <o> +
+			^operator <o2> +)
+(<o2> ^name result
+	^clue <clue1>)
+(<o> ^name result
+	^clue <clue2>)
+(<clue2> ^num_assoc <num_assoc2>)
+(<clue1> ^num_assoc { < <num_assoc2> <num_assoc> } )
+-->
+(<s> ^operator <o> > <o2>)
+}

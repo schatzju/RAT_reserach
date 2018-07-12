@@ -1,0 +1,41 @@
+sp {elaborate*combine_phase
+(state <s2> ^type state
+			^superstate <s>
+			^branch <branch>)
+(<branch> ^sub-element.assoc <assoc>)
+(<branch> ^elements <elements>)
+(<elements> -^assoc <assoc>)
+(<s> ^name codeNames
+	^role clue_giver)
+-->
+(<s2> ^phase combine)
+}
+
+sp {propose*operator*combine_branch
+(state <s2> ^type state
+			^superstate <s>
+			^phase combine)
+(<s> ^name codeNames
+	^role clue_giver)
+-->
+(<s2> ^operator <o> + =)
+(<o> ^name combine_branch)
+}
+
+sp {apply*operator*combine_branch
+(state <s2> ^type state
+			^superstate <s>
+			-^phase query_clue
+			^operator <o>
+			^branch <branch>)
+(<branch> ^sub-element <sub>
+		  ^elements <elem>)
+(<sub> ^assoc <assoc>)
+(<elem> -^assoc <assoc>)
+(<s> ^name codeNames
+	 ^role clue_giver)
+(<o> ^name combine_branch)
+-->
+(<elem> ^assoc <assoc>)
+(<s2> ^grouped <x>)
+}

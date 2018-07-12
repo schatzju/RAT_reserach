@@ -1,0 +1,31 @@
+
+sp {propose*operator*count
+(state <s> ^type state
+			^name codeNames
+			^role clue_giver
+			^branch <branch>)
+(<branch> -^count <count>
+			-^neg <y>)
+-->
+(<s> ^operator <o> + > =)
+(<o> ^name count)
+}
+
+sp {apply*operator*count
+(state <s> ^type state
+			^name codeNames
+			^role clue_giver
+			^branch <branch>
+			^operator <o>)
+(<o> ^name count)
+(<branch> ^elements <elements>
+	-^neg <y>)
+-->
+(<branch> ^count (size <elements>) )
+}
+
+
+
+
+
+

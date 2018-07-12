@@ -1,0 +1,237 @@
+sp {elaborate*query_clue_phase
+(state <s> ^type state
+			^name codeNames
+			^role clue_giver
+			-^phase load_cards
+			^branch <branch>)
+(<branch> -^result <res>
+		-^neg <x>)
+-->
+(<s> ^phase query_branch)
+}
+
+sp {propose*operator*create_result_smem
+(state <s> ^type state
+			^branch <branch>
+			^phase query_branch
+			-^smem.command.query <cmd>)
+(<branch> -^status <stat>
+			^elements <elem>
+			-^neg <x>)
+-->
+(<s> ^operator <o> + =)
+(<o> ^name create_result_smem
+	^elements <elem>)
+}
+
+sp {apply*operator*create_result_smem_neg
+(state <s> ^type state
+			^operator <o>
+			^smem.command <cmd>
+			^branch <branch>
+			^branch <neg_branch>)
+(<branch> ^elements <elem>
+			-^neg <y>)
+(<neg_branch> ^neg <x>
+			^elements <neg_elem>)
+(<o> ^name create_result_smem
+	^elements <elem>)
+-->
+(<cmd> ^query <elem>
+	^neg-query <neg_elem>)
+}
+
+sp {apply*operator*create_result_smem_neg_sub
+(state <s> ^type state
+			^superstate <s1>
+			^operator <o>
+			^smem.command <cmd>
+			^branch <branch>)
+(<s1> ^branch <neg_branch>)
+(<branch> ^elements <elem>
+			-^neg <y>)
+(<neg_branch> ^neg <x>
+			^elements <neg_elem>)
+(<o> ^name create_result_smem
+	^elements <elem>)
+-->
+(<cmd> ^query <elem>
+	^neg-query <neg_elem>)
+}
+
+
+
+sp {apply*operator*create_result_smem_prohibit
+(state <s> ^type state
+			^operator <o>
+			^smem.command <cmd>
+			^branch <branch>
+			^prohibit <pro>)
+(<branch> ^elements <elem>)
+(<o> ^name create_result_smem
+	^elements <elem>)
+-->
+(<cmd> ^prohibit <pro>)
+}
+
+sp {apply*operator*create_result_smem_prohibit_sub
+(state <s> ^type state
+			^operator <o>
+			^smem.command <cmd>
+			^branch <branch>
+			^superstate <s1>)
+(<s1> ^prohibit <pro>)
+(<branch> ^elements <elem>)
+(<o> ^name create_result_smem
+	^elements <elem>)
+-->
+(<cmd> ^prohibit <pro>)
+}
+
+#propose move board to working memory
+sp {propose*operator*move_results
+(state <s> ^type state
+			^phase query_branch
+			^smem.result.success <succ>
+			^smem.result.retrieved.word <word>)
+-->
+(<s> ^operator <o> + > =)
+(<o> ^name move_results)
+}
+
+sp {apply*operator*move_results_neg
+(state <s> ^type state
+			^phase query_branch
+			^operator <o>
+			^smem.command <cmd>
+			^smem.result.retrieved.word <word>
+			^branch <branch>
+			^branch <neg_branch>)
+(<neg_branch> ^neg <x>
+			^elements <neg_elem>)
+(<o> ^name move_results)
+(<cmd> ^query <elem>
+	^neg-query <neg_elem>)
+(<branch> ^elements <elem>
+		-^neg <y>)
+-->
+(<branch> ^status success
+			^result <word>)
+(<cmd> ^query <elem> -)
+(<cmd> ^neg-query <neg_elem> -)
+}
+sp {apply*operator*move_results_neg_sub
+(state <s> ^type state
+			^superstate <s1>
+			^phase query_branch
+			^operator <o>
+			^smem.command <cmd>
+			^smem.result.retrieved.word <word>
+			^branch <branch>)
+(<s1> ^branch <neg_branch>)
+(<neg_branch> ^neg <x>
+			^elements <neg_elem>)
+(<o> ^name move_results)
+(<cmd> ^query <elem>
+	^neg-query <neg_elem>)
+(<branch> ^elements <elem>
+		-^neg <y>)
+-->
+(<branch> ^status success
+			^result <word>)
+(<cmd> ^query <elem> -)
+(<cmd> ^neg-query <neg_elem> -)
+}
+
+sp {apply*operator*move_results
+(state <s> ^type state
+			^phase query_branch
+			^operator <o>
+			^smem.command <cmd>
+			^smem.result.retrieved.word <word>
+			^branch <branch>)
+(<o> ^name move_results)
+(<cmd> ^query <elem>
+	-^neg-query <neg_elem>)
+(<branch> ^elements <elem>
+		-^neg <y>)
+-->
+(<branch> ^status success
+			^result <word>)
+(<cmd> ^query <elem> -)
+}
+
+#propose move board to working memory
+sp {propose*operator*move_results_fail
+(state <s> ^type state
+			^phase query_branch
+			^smem.result.failure <fail>)
+-->
+(<s> ^operator <o> + > =)
+(<o> ^name move_results_fail)
+}
+
+sp {apply*operator*move_results_fail_neg
+(state <s> ^type state
+			^phase query_branch
+			^operator <o>
+			^smem.command <cmd>
+			^branch <branch>
+			^branch <neg_branch>)
+(<neg_branch> ^neg <x>
+			^elements <neg_elem>)
+(<o> ^name move_results_fail)
+(<cmd> ^query <elem>
+	^neg-query <neg_elem>)
+(<branch> ^elements <elem>)
+-->
+(<branch> ^status failure)
+(<cmd> ^query <elem> -)
+(<cmd> ^neg-query <neg_elem> -)
+}
+
+sp {apply*operator*move_results_fail_neg_sub
+(state <s> ^type state
+			^superstate <s1>
+			^phase query_branch
+			^operator <o>
+			^smem.command <cmd>
+			^branch <branch>)
+(<s1> ^branch <neg_branch>)
+(<neg_branch> ^neg <x>
+			^elements <neg_elem>)
+(<o> ^name move_results_fail)
+(<cmd> ^query <elem>
+	^neg-query <neg_elem>)
+(<branch> ^elements <elem>)
+-->
+(<branch> ^status failure)
+(<cmd> ^query <elem> -)
+(<cmd> ^neg-query <neg_elem> -)
+}
+
+sp {apply*operator*move_results_fail
+(state <s> ^type state
+			^phase query_branch
+			^operator <o>
+			^smem.command <cmd>
+			^branch <branch>)
+(<o> ^name move_results_fail)
+(<cmd> ^query <elem>
+		-^neg-query <neg_elem>)
+(<branch> ^elements <elem>)
+-->
+(<branch> ^status failure)
+(<cmd> ^query <elem> -)
+}
+
+#propose move board to working memory
+sp {propose*operator*dummy
+(state <s> ^type state
+			^branch <branch>)
+-->
+(<s> ^operator <o> + < =)
+(<o> ^name dummy)
+}
+
+

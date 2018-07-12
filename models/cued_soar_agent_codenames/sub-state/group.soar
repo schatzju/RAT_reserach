@@ -1,0 +1,50 @@
+sp {elaborate*grouping_phase
+(state <s2> ^type state
+			^superstate <s>
+			-^branch <branch>
+			-^grouped <x>)
+(<s> ^name codeNames
+	^role clue_giver)
+-->
+(<s2> ^phase grouping)
+}
+
+sp {propose*operator*grouping
+(state <s2> ^type state
+			^superstate <s>
+			^phase grouping
+			-^branch.sub-element <elem>)
+(<s> ^name codeNames
+	^role clue_giver)
+-->
+(<s2> ^operator <o> + =)
+(<o> ^name create_groupings)
+}
+
+sp {apply*operator*grouping
+(state <s2> ^type state
+			^superstate <s>
+			^operator <o>)
+(<s> ^name codeNames
+	^role clue_giver
+	^branch <branch-big>
+	^branch { <branch-lil> <> <branch-big> }
+	^highest_clue <big-count>)
+(<branch-big> ^status success
+				^count <big-count>
+				^elements <elem-big>)
+(<branch-lil> ^status success
+				^count 1
+				^elements <elem-lil>)
+(<o> ^name create_groupings)
+-->
+(<s2> ^branch <branch>)
+(<branch> ^sub-element <elem-big>
+		^sub-element <elem-lil>
+		^elements <var>)
+}
+
+
+
+
+

@@ -1,0 +1,74 @@
+sp {propose*initialize-codeNames-clueGiver
+(state <s> ^type state
+			^superstate nil 
+          -^name codeNames)
+-->
+(<s> ^operator <o> +)
+(<o> ^name codeNames
+	^role clue_giver)
+}
+
+sp {apply*initialize-codeNames-clueGiver
+(state <s> ^operator <o>)
+	(<o> ^name codeNames
+		^role <role>)
+-->
+(<s> ^name codeNames
+	^role <role>
+	^branch <branch>
+	^iox <iox>
+	^highest_clue 1 #should always start at 1
+	) #max non neg cards or the max clue number you want
+ (<branch> ^neg <x>
+ 		^elements <elm>)
+ (<iox> ^input-link <in>)
+ (<in> ^board <board>
+ 		^max_assoc <max_a>)
+ (<max_a> ^num 3)
+
+ (<board> ^card <card7>)
+ (<card7> ^word night)
+ (<board> ^card <card8>)
+ (<card8> ^word wrist)
+  (<board> ^card <card9>)
+ (<card9> ^word stop)
+# #(<board> ^card <card9>)
+# #(<card9> ^word bug)
+# #(<board> ^card <card10>)
+# #(<card10> ^word pyramid)
+# (<board> ^card <card11>)
+# (<card11> ^word luck)
+# #(<board> ^card <card12>)
+# #(<card12> ^word bermuda)
+# (<board> ^card <card12>)
+# (<card12> ^word you
+# 			^neg <x>)
+
+
+
+
+(write |Initialized|)
+}
+
+# sp {apply*initialize-codeNames-clueGiver
+# (state <s> ^operator <o>)
+# 	(<o> ^name codeNames
+# 		^role <role>)
+# -->
+# (<s> ^name codeNames
+# 	^role <role>
+# 	^board <board>
+# 	^branch <branch>
+# 	^highest_clue 1
+# 	^max 2)
+# (<branch> ^neg <y>
+# 			^elements <elm>)
+# (<board> ^card <card1>)
+# (<card1> ^word car)
+# (<board> ^card <card2>)
+# (<card2> ^word thing
+# 		^neg <x>)
+# (<board> ^card <card3>)
+# (<card3> ^word circle)
+# (write |Initialized|)
+# }

@@ -1,0 +1,51 @@
+smem --add {
+	(<a> ^word a)
+	(<b> ^word b)
+	(<c> ^word c)
+	(<d> ^word d)
+	(<linka> ^word linka)
+	(<linkb> ^word linkb)
+	(<linkc> ^word linkc)
+	(<linkd> ^word linkd)
+
+
+	(<a> ^assoc <linka> (10.0))
+	(<linka> ^assoc <a> (10.0))
+
+	(<b> ^assoc <linka> (10.0))
+	(<linka> ^assoc <b> (10.0))
+
+	(<c> ^assoc <linka> (10.0))
+	(<linka> ^assoc <c> (10.0))
+
+	(<d> ^assoc <linka> (10.0))
+	(<linka> ^assoc <d> (10.0))
+
+	(<a> ^assoc <linkb> (5.0))
+	(<linkb> ^assoc <a> (5.0))
+
+	(<b> ^assoc <linkb> (5.0))
+	(<linkb> ^assoc <b> (5.0))
+
+	(<c> ^assoc <linkb> (5.0))
+	(<linkb> ^assoc <c> (5.0))
+
+	(<d> ^assoc <linkb> (5.0))
+	(<linkb> ^assoc <d> (5.0))
+
+
+	(<a> ^assoc <linkc> (10.0))
+	(<linkc> ^assoc <a> (10.0))
+
+	(<b> ^assoc <linkc> (10.0))
+	(<linkc> ^assoc <b> (10.0))
+
+	(<c> ^assoc <linkd> (10.0))
+	(<linkd> ^assoc <c> (10.0))
+
+	(<d> ^assoc <linkd> (10.0))
+	(<linkd> ^assoc <d> (10.0))
+
+}
+
+#ab+, ac+, ad+, bc-, bd-, cd-

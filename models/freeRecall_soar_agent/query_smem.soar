@@ -1,0 +1,109 @@
+sp {elaborate*query_clue_phase
+(state <s> ^type state
+			^name codeNames
+			^role clue_giver
+			-^phase load_cards
+			-^phase connections
+			^board <board>)
+-(<s> ^clue <clue>)
+-->
+(<s> ^phase query_clue)
+}
+
+sp {elaborate*query_clue_phase_back
+(state <s> ^type state
+			^name codeNames
+			^role clue_giver
+			^branch <branch>
+			^clue <clue>
+			-^phase load_cards
+			-^phase connections)
+-->
+(<s> ^phase query_clue)}
+
+sp {propose*operator*query_smem_clue
+(state <s> ^type state
+			^phase query_clue
+			-^smem.command.query <cmd>)
+-->
+(<s> ^operator <o> + =)
+(<o> ^name query_clue)
+}
+
+sp {apply*operator*query_smem_clue
+(state <s> ^type state
+			^operator <o>
+			^smem.command <cmd>)
+(<o> ^name query_clue)
+-->
+(<cmd> ^query <cue>)
+(<cue> ^word <word>)
+}
+
+sp {apply*operator*create_result_smem_prohibit
+(state <s> ^type state
+			^operator <o>
+			^smem.command <cmd>
+			^prohibit <lti>)
+(<cmd> -^prohibit <lti>)
+(<o> ^name query_clue)
+-->
+(<cmd> ^prohibit <lti>)
+}
+
+#propose move board to working memory
+sp {propose*operator*move_results
+(state <s> ^type state
+			^phase query_clue
+			^smem.result.success <succ>
+			^smem.result.retrieved.word <word>)
+-->
+(<s> ^operator <o> + > =)
+(<o> ^name move_results)
+}
+
+#propose move board to working memory
+sp {propose*operator*move_results_fail
+(state <s> ^type state
+			^phase query_clue
+			^smem.result.failure <fail>)
+-->
+(<s> ^operator <o> + > =)
+(<o> ^name move_results_fail)
+}
+
+sp {apply*operator*move_results_fail
+(state <s> ^type state
+			^phase query_clue
+			^operator <o>
+			^smem.command <cmd>
+			^max-attempts <max_num>
+			^attempts <old_at>)
+(<o> ^name move_results_fail)
+(<cmd> ^query <elem>)
+-->
+(<s> ^attempts <max_num>
+	^attempts <old_at> -)
+(<cmd> ^query <elem> -)
+}
+
+sp {apply*operator*move_results
+(state <s> ^type state
+			^phase query_clue
+			^operator <o>
+			^smem.command <cmd>
+			^smem.result.retrieved <lti>)
+(<o> ^name move_results)
+(<cmd> ^query <elem>)
+(<lti> ^word <word>)
+-->
+(<s> ^clue <clue>)
+(<clue> ^element <lti>
+		^word <word>
+		^connections <con> )
+(<cmd> ^query <elem> -)
+(write |guess | <word>)
+}
+
+
+

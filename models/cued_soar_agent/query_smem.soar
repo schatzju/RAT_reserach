@@ -1,0 +1,112 @@
+sp {elaborate*query_clue_phase
+(state <s> ^type state
+			^name RAT
+			^role solver
+			-^phase load_cards
+			-^phase fill_branches
+			-^phase fill_branches_last
+			^branch <branch>)
+(<branch> -^result <res>
+			^elements.assoc <word>)
+-->
+(<s> ^phase query_branch)
+}
+
+sp {propose*operator*create_result_smem
+(state <s> ^type state
+			^branch <branch>
+			^phase query_branch
+			-^smem.command.query <cmd>)
+(<branch> -^status <stat>
+			-^count 2
+			^elements <elem>)
+-->
+(<s> ^operator <o> + > =)
+(<o> ^name create_result_smem
+	^elements <elem>)
+}
+
+sp {propose*operator*create_result_smem_two
+(state <s> ^type state
+			^branch <branch>
+			^phase query_branch
+			-^smem.command.query <cmd>)
+(<branch> -^status <stat>
+			^count 2
+			^elements <elem>)
+-->
+(<s> ^operator <o> + =)
+(<o> ^name create_result_smem
+	^elements <elem>)
+}
+
+
+sp {apply*operator*create_result_smem
+(state <s> ^type state
+			^operator <o>
+			^smem.command <cmd>
+			^branch <branch>
+			^prohibit <pro>)
+(<branch> ^elements <elem>)
+(<o> ^name create_result_smem
+	^elements <elem>)
+-->
+(<cmd> ^prohibit <pro>
+		^query <elem>)
+(<s> ^retrieved <ret>)
+}
+
+
+#propose move result board to working memory
+sp {propose*operator*move_results
+(state <s> ^type state
+			^phase query_branch
+			^smem.result.success <succ>
+			^smem.result.retrieved.word <word>)
+-->
+(<s> ^operator <o> + > =)
+(<o> ^name move_results)
+}
+
+sp {apply*operator*move_results
+(state <s> ^type state
+			^phase query_branch
+			^operator <o>
+			^smem.command <cmd>
+			^smem.result.retrieved.word <word>
+			^branch <branch>)
+(<branch> ^elements <elem>)
+(<o> ^name move_results)
+(<cmd> ^query <elem>)
+-->
+(<branch> ^status success
+			^result <word>)
+(<cmd> ^query <elem> -)
+}
+
+#propose move board to working memory
+sp {propose*operator*move_results_fail
+(state <s> ^type state
+			^phase query_branch
+			^smem.result.failure <fail>)
+-->
+(<s> ^operator <o> + > =)
+(<o> ^name move_results_fail)
+}
+
+
+sp {apply*operator*move_results_fail
+(state <s> ^type state
+			^phase query_branch
+			^operator <o>
+			^smem.command <cmd>
+			^branch <branch>)
+(<o> ^name move_results_fail)
+(<cmd> ^query <elem>)
+(<branch> ^elements <elem>)
+-->
+(<s> ^branch <branch> -)
+(<cmd> ^query <elem> -)
+}
+
+

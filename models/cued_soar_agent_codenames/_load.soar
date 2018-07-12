@@ -1,0 +1,42 @@
+#settings for query to only go 4 down the most active 
+#make base-level activation mean more than spreading
+
+
+#wma --set decay-rate .8
+#wma --set forgetting on
+wma --set activation on
+
+smem --set activation-mode base-level
+#leave until slow
+smem --set base-update-policy stable
+#smem --set base-incremental-threshes {1,2,3,4,5,10,20,50,100}
+smem --set spreading-depth-limit 1
+smem --set spreading-loop-avoidance on
+#smem --set spreading-baseline .00001
+smem --set spreading-limit 1000 #702
+
+#smem --set path /Users/Jule/Documents/soar/soar/out/comRAT_cp.db
+#smem --set database file
+
+#smem --set spreading-continue-probability .99
+#smem --set base-decay .1
+smem --set spreading on
+smem --set learning on
+
+chunk never
+
+source initialize.soar
+source load_cards_wm.soar
+source count.soar
+source query_smem.soar
+source sub-state/group.soar
+source sub-state/combine.soar
+source sub-state/prune.soar
+source sub-state/move.soar
+source clean.soar
+source result.soar
+#source queue-up-cue.soar
+#source give_clue.soar
+#source smem_test_data.soar
+#source smem_test_4b.soar
+#source /Users/Jule/Documents/soar/codeNames/smem_script/smem_script/outd.soar

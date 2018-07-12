@@ -1,0 +1,18 @@
+smem --add {
+	(<a> ^word a)
+	(<b> ^word b)
+	(<c> ^word c)
+	(<d> ^word d)
+	(<e> ^word e)
+	(<f> ^word f)
+	
+	(<a> ^assoc <c> (49.0))
+	
+	(<a> ^assoc <d> (51.0))
+
+	(<b> ^assoc <c> (49.0))
+
+	(<b> ^assoc <d> (51.0))
+
+	(<c> ^assoc <e> (1.0))
+}

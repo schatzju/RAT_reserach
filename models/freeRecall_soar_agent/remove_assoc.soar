@@ -1,0 +1,60 @@
+# removes sub associations from thing in the prohibited list
+# this prevents spreading from things in the prohibit list
+
+sp {elaboration*set_assoc_flag
+(state <s> ^type state
+			^name codeNames
+			^role clue_giver
+			-^phase load_cards
+			^board <board>
+			^clue <clue>)
+(<clue> ^element.assoc <assoc>)
+(<clue> ^element.word <word>)
+	-->
+(<s> ^phase remove)
+}
+
+sp {propose*operator*remove_assoc
+	(state <s> ^type state
+			^name codeNames
+			^role clue_giver
+			-^phase load_cards
+			^board <board>
+			^clue <clue>)
+(<clue> ^element.assoc <assoc>)
+(<clue> ^element.word <word>)	
+	-->
+(<s> ^operator <o> + =)
+(<o> ^name remove_assoc)
+}
+
+sp {apply*operator*remove_assoc
+(state <s> ^type state
+			^name codeNames
+			^role clue_giver
+			^operator <o>
+			-^phase load_cards
+			^board <board>
+			^clue <clue>)
+(<clue> ^element <element>)
+(<element> ^assoc <assoc>)	
+(<o> ^name remove_assoc)
+-->
+(<element> ^assoc <assoc> - )
+}
+
+sp {apply*operator*remove_assoc_word
+(state <s> ^type state
+			^name codeNames
+			^role clue_giver
+			^operator <o>
+			-^phase load_cards
+			^board <board>
+			^clue <clue>)
+(<clue> ^element <element>)
+(<element> ^word <word>)	
+(<o> ^name remove_assoc)
+-->
+(<element> ^word <word> - )
+}
+

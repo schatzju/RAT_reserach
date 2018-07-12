@@ -1,0 +1,52 @@
+sp {propose*initialize-RAT-solver
+(state <s> ^type state
+			^superstate nil 
+          -^name RAT)
+-->
+(<s> ^operator <o> +)
+(<o> ^name RAT
+	^role solver)
+}
+
+sp {apply*initialize-RAT-solver
+(state <s> ^operator <o>)
+	(<o> ^name RAT
+		^role <role>)
+-->
+(<s> ^name RAT
+	^role <role>
+	^branch <branch>
+	^branch <branch2a>
+	^branch <branch2b>
+	^branch <branch2c>
+	#^branch <branch13>
+    #^io <iox>
+)
+(<branch> ^elements <elements1>
+		^count 3
+		^number 3)
+(<branch2a> ^elements <elements2>
+		^count 2
+		^number 2
+		^id 2A)
+(<branch2b> ^elements <elements3>
+		^count 2
+		^number 2
+		^id 2B)
+(<branch2c> ^elements <elements4>
+		^count 2
+		^number 2
+		^id 2C)
+#(<branch13> ^elements <elements>
+#		^count 1
+#		^role <c>)
+ # (<iox> ^input-link <in>)
+ # (<in> ^board <board>)
+ # (<board> ^card <card1>)
+ # (<card1> ^word night)
+ # (<board> ^card <card2>)
+ # (<card2> ^word wrist)
+ # (<board> ^card <card3>)
+ # (<card3> ^word stop)
+(write |Initialized|)
+}
