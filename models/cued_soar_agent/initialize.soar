@@ -40,13 +40,13 @@ sp {apply*initialize-RAT-solver
 #(<branch13> ^elements <elements>
 #		^count 1
 #		^role <c>)
- # (<iox> ^input-link <in>)
- # (<in> ^board <board>)
- # (<board> ^card <card1>)
- # (<card1> ^word night)
- # (<board> ^card <card2>)
- # (<card2> ^word wrist)
- # (<board> ^card <card3>)
- # (<card3> ^word stop)
+#(<iox> ^input-link <in>)
+#(<in> ^board <board>)
+#(<board> ^card <card1>)
+# (<card1> ^word rocking)
+# (<board> ^card <card2>)
+# (<card2> ^word wheel)
+# (<board> ^card <card3>)
+# (<card3> ^word high)
 (write |Initialized|)
 }

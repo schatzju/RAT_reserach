@@ -21,8 +21,8 @@ using namespace sml;
 //const string database_cp_loc = "new_hbc_double_cp.db";
 const string db_loc = ".db";
 const string db_cp_loc = "_cp.db";
-const string c_soar_source_loc = "cued_soar_agent/_load.soar";
-const string f_soar_source_loc = "freeRecall_soar_agent/_load.soar";
+const string c_soar_source_loc = "models/cued_soar_agent/_load.soar";
+const string f_soar_source_loc = "models/freeRecall_soar_agent/_load.soar";
 
 
 void removeWhitespace(std::string& str) {
@@ -168,11 +168,11 @@ int main(int argc, char** argv){
 		
 		if (mode == 'f') {
 			datFile.open("rat_out_freeRecall_" + to_string(num_attempt) + "_" + database + ".csv");
-			datFile << "word1,word2,word3,solution,result,attempts,correct" << endl;
+			datFile << "word1,word2,word3,solution,result,attempts,connections,correct" << endl;
 		}
 		if (mode == 'c') {
 			datFile.open("rat_out_cued_" + database + ".csv");
-			datFile << "word1,word2,word3,solution,result,correct" << endl;
+			datFile << "word1,word2,word3,solution,result,connections,correct" << endl;
 
 		}
 
@@ -199,6 +199,7 @@ int main(int argc, char** argv){
 			pAgent->Commit();
 
 			int step = 0;
+			
 			
 			//run while there isn't any new output.
 			do {
@@ -236,7 +237,7 @@ int main(int argc, char** argv){
                 string attempts;
                 if (mode == 'f') {
                     attempts = pCommand->GetParameterValue("attempts");
-                    datFile << result << "," << num << ",";
+                    datFile << result << "," << attempts << "," << num << ",";
                 
                     if(result == solution){
                         datFile << '1' << endl;
@@ -249,7 +250,7 @@ int main(int argc, char** argv){
                 }
 
                 if (mode == 'c'){
-    				datFile << result << ",";
+    				datFile << result << "," << num << ",";
 
     				if (result == solution) {
     					datFile << '1' << endl;
