@@ -15,9 +15,6 @@ smem --set spreading-loop-avoidance on
 #smem --set spreading-baseline .00001
 smem --set spreading-limit 1000 #702
 
-smem --set path /Users/schatzju/Documents/Soar/out/june_19_2018_COCA_cp.db
-smem --set database file
-
 #smem --set spreading-continue-probability .99
 #smem --set base-decay .1
 smem --set spreading on
@@ -25,6 +22,7 @@ smem --set learning on
 
 chunk never
 
+source /Users/schatzju/Dropbox/soar/codeNames/smem_script/smem_script/smem_Soar/hbc_single.soar
 source initialize.soar
 source load_cards_wm.soar
 source query_smem.soar
@@ -33,4 +31,3 @@ source load_branches.soar
 source last_result.soar
 #source smem_test_data.soar
 #source smem_test_4b.soar
-#source /Users/Jule/Documents/soar/codeNames/smem_script/smem_script/outd.soar
