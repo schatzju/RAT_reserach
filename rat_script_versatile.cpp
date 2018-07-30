@@ -42,51 +42,70 @@ void reset_database(string database_loc, string database_cp_loc){
 }
 
 
+
 int main(int argc, char** argv){
 	char mode = 'x';
 	int num_attempt = -1;
     string soar_source_loc = f_soar_source_loc;
     string database_loc;
 	string database_cp_loc;
+	string database;
 
-	if (argc != 4 |!(argv[1][0]=='f'|argv[1][0]=='c')) {
+	//optional RAT problem specification
+	string rat_prob_file = "raw_144.txt";
+
+	if (argc < 4 |!(argv[1][0]=='f'|argv[1][0]=='c')) {
 		cerr << "error! pls specify mode and #attempt: f(ree recall) 1 || c(ued) n || database name" << endl;
 		exit(1);
 	}
 	else {
 		mode = argv[1][0];
 		num_attempt = atoi(argv[2]);
+		database = string(argv[3]);
+
+		if(database.substr(database.length() - 3, 3) == ".db"){
+			cout << "WARNING: removing the .db from the database name inputed" << endl;
+			database.erase(database.length() - 3, 3);
+		}
 		database_loc = string(argv[3]) + db_loc;
 		database_cp_loc = string(argv[3]) + db_cp_loc;
+
+		if(argc == 5){
+			rat_prob_file = string(argv[4]);
+		}
 	}
-	//free recall
-	//should be size 144, each vector size 20 (for each try)
-    vector< vector<unsigned int> > combined_results(144);
    
 	if (mode == 'c'){
         num_attempt = 1;
         soar_source_loc = c_soar_source_loc;
     }
-    cout << "what mode: " << mode << " num attmept: " << num_attempt << endl;
+
+    if(mode == 'f') cout << "MODE: f ATTEMPTS: " << to_string(num_attempt) << endl;
+    if(mode == 'c') cout << "MODE: c" << endl;
 
     
 
-	//Read in 144 rat examples ------------------
-	//read_raw_data(rat_word_data);
+	//Read in rat examples ------------------
 	
 	ifstream fin;
-	fin.open("raw_144.txt");
+	fin.open(rat_prob_file);
 
 	if (!fin.is_open()) {
-		cout << "Error opening raw_144.txt!" << endl;
+		cout << "Error opening " + rat_prob_file << endl;
 		exit(1);
 	}
 
 	vector< vector<string> > rat_word_data;
 	string word1, word2, word3, solution;
 
+	int rat_size = 0;
+
 	while (fin >> word1 >> word2 >> word3 >> solution) {
+		rat_size++;
 		vector<string> word_tri;
+
+		removeWhitespace(word3);
+		
 		word_tri.push_back(word1);
 		word_tri.push_back(word2);
 		word_tri.push_back(word3);
@@ -94,7 +113,10 @@ int main(int argc, char** argv){
 
 		rat_word_data.push_back(word_tri);
 	}
-	// assert(rat_word_data.size() == 144);
+
+	//Used to store all results for creating a combined results file
+	vector< vector<unsigned int> > combined_results(rat_size);
+
     //-------------------------------------------
 	// Create an instance of the Soar kernel in our process
     Kernel* pKernel = sml::Kernel::CreateKernelInNewThread();
@@ -140,14 +162,21 @@ int main(int argc, char** argv){
     StringElement* pID_word2 = pAgent->CreateStringWME(pID_card2, "word", " ");
     StringElement* pID_word3 = pAgent->CreateStringWME(pID_card3, "word", " ");
 
-	for (int  j= 0; j < num_attempt; j++) {
+	for (int j= 0; j < num_attempt; j++) {
 
 		ofstream datFile;
-		datFile.open("rat_out_" + to_string(num_attempt) + "_" + database_loc + ".csv");
+		
 		if (mode == 'f') {
-			datFile << "word1,word2,word3,solution,result,number,correct" << endl;
+			datFile.open("rat_out_freeRecall_" + to_string(num_attempt) + "_" + database + ".csv");
+			datFile << "word1,word2,word3,solution,result,attempts,correct" << endl;
 		}
-		//loop through 144 RAT examples  
+		if (mode == 'c') {
+			datFile.open("rat_out_cued_" + database + ".csv");
+			datFile << "word1,word2,word3,solution,result,correct" << endl;
+
+		}
+
+		//loop through RAT problems  
 		for (int i = 0; i < rat_word_data.size(); i++) {
 
 			assert(rat_word_data[i].size() == 4);
@@ -157,21 +186,21 @@ int main(int argc, char** argv){
 			word3 = rat_word_data[i][2];
 			solution = rat_word_data[i][3];
 
-            //datFile << word1 << "," << word2 << "," << word3 << "," << solution << ",";
-			cout << word1 << " " << word2 << " " << word3 << endl;
+            datFile << word1 << "," << word2 << "," << word3 << "," << solution << ",";
 
-			removeWhitespace(word3);
+			cout << word1 << " " << word2 << " " << word3 << endl;
 
 			pAgent->Update(pID_word1, word1.c_str());
 			pAgent->Update(pID_word2, word2.c_str());
 			pAgent->Update(pID_word3, word3.c_str());
            
             if (mode == 'f') pAgent->Update(max_num, num_attempt);
+			
 			pAgent->Commit();
 
 			int step = 0;
+			
 			//run while there isn't any new output.
-
 			do {
                 step++;
                 pAgent->RunSelf(1);
@@ -179,14 +208,16 @@ int main(int argc, char** argv){
             } while (!pAgent->Commands() && step < 400);
 
 			if (step == 400) {
+
+				cout << "NA" << endl;
 		
 				switch (mode) {
 				case 'c':
-					datFile << "NA" << "," << "NA" << "," << 0 << endl;
+					datFile << "NA,0" << endl;
 					break;
 				case 'f':
-					datFile << "NA" << "," << 0 << "," << num_attempt << ",";
-					datFile << '0' << endl;
+					datFile << "NA,0,0";
+		
 					combined_results[i].push_back(0);
 					cout << "NA" << endl;
 					break;
@@ -198,18 +229,14 @@ int main(int argc, char** argv){
 				string result = pCommand->GetParameterValue("word");
 				string num = pCommand->GetParameterValue("num");
 
-                
-                
                 cout << result << endl;
 
-				removeWhitespace(solution);
-				removeWhitespace(result);
+                removeWhitespace(result);
 
-                /*freerecall*/
                 string attempts;
                 if (mode == 'f') {
                     attempts = pCommand->GetParameterValue("attempts");
-                    datFile << result << "," << num << "," << num_attempt << ",";
+                    datFile << result << "," << num << ",";
                 
                     if(result == solution){
                         datFile << '1' << endl;
@@ -222,7 +249,7 @@ int main(int argc, char** argv){
                 }
 
                 if (mode == 'c'){
-    				datFile << result << "," << num << ",";
+    				datFile << result << ",";
 
     				if (result == solution) {
     					datFile << '1' << endl;
@@ -241,9 +268,10 @@ int main(int argc, char** argv){
 		if (mode == 'f') reset_database(database_loc, database_cp_loc);
 	}
    
+   	//creating combined file
 	if (mode == 'f') {
 		ofstream comFile;
-		comFile.open("freeRecall_" + num_attempt + '_' + database_loc + ".csv");
+		comFile.open("rat_out_freeRecall_combined_" + database + ".csv");
 
 		for (int i = 0; i < combined_results.size(); i++) {
 			for (int k = 0; k < combined_results[i].size() - 1; k++) {
