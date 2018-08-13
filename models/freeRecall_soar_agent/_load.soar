@@ -1,32 +1,27 @@
-#wma --set decay-rate .8
-#wma --set forgetting on
 wma --set activation on
 
 smem --set activation-mode base-level
-#leave until slow
 smem --set base-update-policy stable
-#smem --set base-incremental-threshes {1,2,3,4,5,10,20,50,100}
+
 smem --set spreading-depth-limit 1
 smem --set spreading-loop-avoidance on
-#smem --set spreading-wma-source on
+smem --set spreading-wma-source off
 smem --set base-inhibition on
-#smem --set spreading-baseline .00001
-smem --set spreading-limit 1000 #702
+smem --set spreading-limit 9999999
+srand
 
-
-#smem --set spreading-continue-probability .99
-#smem --set base-decay .1
 smem --set spreading on
 smem --set learning on
 
 chunk never
+
+#smem --set path /Users/schatzju/Documents/Soar/out/sub_hbc_single_trash_cp.db 
+#smem --set database file
+
 source initialize.soar
 source load_cards_wm.soar
 source count.soar
 source query_smem.soar
 source result.soar
 source remove_assoc.soar
-#source queue-up-cue.soar
-#source give_clue.soar
-#source smem_test_data.soar
-#source smem_test_4b.soar
+

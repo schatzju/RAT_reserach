@@ -4,6 +4,7 @@ sp {elaborate*query_clue_phase
 			^role clue_giver
 			-^phase load_cards
 			-^phase connections
+            -^phase remove
 			^board <board>)
 -(<s> ^clue <clue>)
 -->
@@ -17,13 +18,39 @@ sp {elaborate*query_clue_phase_back
 			^branch <branch>
 			^clue <clue>
 			-^phase load_cards
+            -^phase remove
 			-^phase connections)
 -->
 (<s> ^phase query_clue)}
 
-sp {propose*operator*query_smem_clue
+sp {elaborate*query_clue_phase_back_2
+(state <s> ^type state
+			^name codeNames
+			^role clue_giver
+			^branch <branch>
+			^clue <clue>
+			-^phase load_cards
+            -^attempts <num>
+            -^phase remove
+			^max-attempts <num>)
+(<clue>     ^stripped <asdf>)
+-->
+(<s> ^phase query_clue)}
+
+#sp {propose*operator*query_smem_clue
+#(state <s> ^type state
+#			^phase query_clue
+#			-^smem.command.query <cmd>)
+#-->
+#(<s> ^operator <o> + =)
+#(<o> ^name query_clue)
+#}
+
+sp {propose*operator*query_smem_clue_2
 (state <s> ^type state
 			^phase query_clue
+            -^attempts <num>
+            ^max-attempts <num>
 			-^smem.command.query <cmd>)
 -->
 (<s> ^operator <o> + =)
@@ -89,6 +116,7 @@ sp {apply*operator*move_results_fail
 
 sp {apply*operator*move_results
 (state <s> ^type state
+            ^attempts <att>
 			^phase query_clue
 			^operator <o>
 			^smem.command <cmd>
@@ -97,10 +125,11 @@ sp {apply*operator*move_results
 (<cmd> ^query <elem>)
 (<lti> ^word <word>)
 -->
-(<s> ^clue <clue>)
+(<s> ^clue <clue> ^attempts ( + <att> 1 ) 
+	^attempts <att> -)
 (<clue> ^element <lti>
 		^word <word>
-		^connections <con> )
+		^connections <con>)
 (<cmd> ^query <elem> -)
 (write |guess | <word>)
 }
