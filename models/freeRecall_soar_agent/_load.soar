@@ -15,9 +15,6 @@ smem --set learning on
 
 chunk never
 
-#smem --set path /Users/schatzju/Documents/Soar/out/sub_hbc_single_trash_cp.db 
-#smem --set database file
-
 source initialize.soar
 source load_cards_wm.soar
 source count.soar

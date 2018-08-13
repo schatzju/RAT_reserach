@@ -83,6 +83,7 @@ sp {propose*operator*move_results
 (state <s> ^type state
 			^phase query_clue
 			^smem.result.success <succ>
+            ^smem.result.activation <act>
 			^smem.result.retrieved.word <word>)
 -->
 (<s> ^operator <o> + > =)
@@ -120,7 +121,8 @@ sp {apply*operator*move_results
 			^phase query_clue
 			^operator <o>
 			^smem.command <cmd>
-			^smem.result.retrieved <lti>)
+			^smem.result.retrieved <lti>
+            ^smem.result.activation <act>)
 (<o> ^name move_results)
 (<cmd> ^query <elem>)
 (<lti> ^word <word>)
@@ -129,7 +131,8 @@ sp {apply*operator*move_results
 	^attempts <att> -)
 (<clue> ^element <lti>
 		^word <word>
-		^connections <con>)
+		^connections <con>
+        ^activation <act>)
 (<cmd> ^query <elem> -)
 (write |guess | <word>)
 }
