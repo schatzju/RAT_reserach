@@ -87,6 +87,11 @@ sp {prefrence*select_operator_result_num
 (<s> ^operator <o1> > <o2>)
 }
 
+#Rules featuring "activation" in this branch which are not present in the other branch are for a
+#test version of Soar in which the architecture reports back the activation of the retrieved element
+#on the smem link for the element which is retrieved. This served as a tie-breaking mechanism in the
+#paper for discriminating between otherwise equivalent results for the agent to report back.
+
 sp {prefrence*select_operator_result_act
 (state <s> ^type state
 			^name codeNames
