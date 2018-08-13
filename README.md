@@ -13,4 +13,4 @@ Link to paper: soar.eecs.umich.edu/pubs/schatz_iccm18.pdf
 3. For mac run: export DYLD_LIBRARY_PATH=/Users/schatzju/Documents/Soar/out/
 4. Run executable:  ./exe < f(ree recall model) or c(ued retrieval model)> < attempts> < database name> < rat problems text file>
    
-   for example:  ./a.out f 15 sub_hbc_single_trash raw_144_sub_test.txt
+   for example:  ./a.out   f   15   sub_hbc_single_trash   raw_144_sub.txt
