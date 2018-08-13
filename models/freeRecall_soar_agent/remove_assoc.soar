@@ -7,9 +7,11 @@ sp {elaboration*set_assoc_flag
 			^role clue_giver
 			-^phase load_cards
 			^board <board>
-			^clue <clue>)
-(<clue> ^element.assoc <assoc>)
-(<clue> ^element.word <word>)
+			^clue <clue>
+            ^prohibit <lti_element>)
+(<clue> ^element <lti_element>)
+(<lti_element> ^assoc <assoc>
+               ^word <word>)
 	-->
 (<s> ^phase remove)
 }
@@ -20,9 +22,13 @@ sp {propose*operator*remove_assoc
 			^role clue_giver
 			-^phase load_cards
 			^board <board>
-			^clue <clue>)
-(<clue> ^element.assoc <assoc>)
-(<clue> ^element.word <word>)	
+			^clue <clue>
+            ^prohibit <lti_element>
+            -^attempts <num>
+			^max-attempts <num>)
+(<clue> ^element <lti_element>)
+(<lti_element> ^assoc <assoc>
+               ^word <word>)	
 	-->
 (<s> ^operator <o> + =)
 (<o> ^name remove_assoc)
@@ -55,6 +61,7 @@ sp {apply*operator*remove_assoc_word
 (<element> ^word <word>)	
 (<o> ^name remove_assoc)
 -->
-(<element> ^word <word> - )
+(<element> ^word <word> -)
+(<clue> ^stripped <flag>)
 }
 

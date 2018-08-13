@@ -7,7 +7,7 @@ sp {elaborate*phase_connections
 			^board <board>
 			^clue <clue>)
 
-(<clue> -^num_assoc <num>)
+-(<clue> ^stripped <asdf>)
 -->
 (<s> ^phase connections)
 }
@@ -15,13 +15,10 @@ sp {elaborate*phase_connections
  sp {propose*operator*add_connection
 (state <s> ^type state
 			^name codeNames
-			^phase connections
+			#^phase connections
 			^role clue_giver
 			^clue <clue>
 			^branch <branch>)
-#there exists a branch whose lti has an 
-#association with a clue that doesn't
-#already have that association
 (<clue> ^element <lti_clue1>)	
 (<clue> ^word <word_p>)
 (<branch> ^element <lti>
@@ -32,87 +29,77 @@ sp {elaborate*phase_connections
 (<con> -^word <word>)
 -->
 (<s> ^operator <o> + > =)
-(<o> ^name add_connection)
+(<o> ^name add_connection ^con <con> ^clue <clue> ^word <word> ^lti <lti>)
+(write |proposing connection from RAT cue | <word> | to | <word_p> |. |)
+}
+
+ sp {propose*operator*add_connection_otherway
+(state <s> ^type state
+			^name codeNames
+			#^phase connections
+			^role clue_giver
+			^clue <clue>
+			^branch <branch>)
+(<clue> ^element <clue_lti>)	
+(<clue_lti> ^assoc { @ <lti> <lti_clue1>})
+(<clue> ^word <word_p>)
+(<branch> ^element <lti>
+		-^neg <neg>)
+(<lti> 	^word <word>)
+(<clue> ^connections <con>)
+(<con> -^word <word>)
+-->
+(<s> ^operator <o> + > =)
+(<o> ^name add_connection ^con <con> ^clue <clue> ^word <word> ^lti <lti>)
+(write |proposing connection from guess | <word_p> | to | <word> |. |)
+}
+
+sp {apply*operator*add_connection_first
+(state <s> ^type state
+			#^phase connections
+			^name codeNames
+			^role clue_giver
+			^operator <o>
+			^clue <clue>
+			#^attempts <att>
+			^branch <branch>)
+(<clue> ^element <lti_clue1>)	
+(<branch> ^element <lti>)
+
+	(<lti>	^word <word>)
+(<clue> ^connections <con> ^word <word_p> -^num_assoc <any>)
+(<con> -^word <word>)
+(<o> ^name add_connection ^con <con> ^clue <clue> ^word <word> ^lti <lti>)
+-->
+(<con> ^word <word>)
+(<clue> ^flag connects ^num_assoc 1)
+(<s> 	^prohibit <lti_clue1>)
+(write |Connected guess | <word_p> | to RAT prompt | <word> |.|)
 }
 
 sp {apply*operator*add_connection
 (state <s> ^type state
-			^phase connections
+			#^phase connections
 			^name codeNames
 			^role clue_giver
 			^operator <o>
 			^clue <clue>
-			^attempts <att>
+			#^attempts <att>
 			^branch <branch>)
-#there exists a branch whose lti has an 
-#association with a clue that doesn't
-#already have that association
-(<clue> ^element <lti_clue1>)	
-(<branch> ^element <lti>
-		-^neg <neg>)
-(<lti> ^assoc { @ <lti_clue1> <lti_clue2>} 
-		^word <word>)
-(<clue> ^connections <con>)
+(<clue> ^element <lti_clue1> ^num_assoc <some>)	
+(<branch> ^element <lti>)
+
+	(<lti>	^word <word>)
+(<clue> ^connections <con> ^word <word_p>)
 (<con> -^word <word>)
-(<o> ^name add_connection)
+(<o> ^name add_connection ^con <con> ^clue <clue> ^word <word> ^lti <lti>)
 -->
 (<con> ^word <word>)
-(<clue> ^flag connects)
-(<s> ^attempts ( + <att> 1 ) 
-	^attempts <att> -
-	^prohibit <lti_clue1>)
+(<clue> ^flag connects ^num_assoc ( + <some> 1) ^num_assoc <some> -)
+(<s> 	^prohibit <lti_clue1>)
+(write |Connected guess | <word_p> | to RAT prompt | <word> |.|)
 }
-
- sp {propose*operator*add_connection_neg
-(state <s> ^type state
-			^name codeNames
-			^phase connections
-			^role clue_giver
-			^clue <clue>
-			^branch <branch>)
-#there exists a branch whose lti has an 
-#association with a clue that doesn't
-#already have that association
-(<clue> ^element <lti_clue1>)	
-(<clue> ^word <word_p>)
-(<branch> ^element <lti>
-			^neg <neg>)
-(<branch> ^assoc { @ <lti_clue1> <lti_clue2>} 
-		^word <word>)
-(<clue> ^connections <con>)
-(<con> -^word <word>)
--->
-(<s> ^operator <o> + > =)
-(<o> ^name add_connection_neg)
-}
-
-sp {apply*operator*add_connection_neg
-(state <s> ^type state
-			^phase connections
-			^name codeNames
-			^role clue_giver
-			^operator <o>
-			^clue <clue>
-			^attempts <att>
-			^branch <branch>)
-#there exists a branch whose lti has an 
-#association with a clue that doesn't
-#already have that association
-(<clue> ^element <lti_clue1>)	
-(<branch> ^element <lti>
-			^neg <neg>)
-(<branch> ^assoc { @ <lti_clue1> <lti_clue2>} 
-		^word <word>)
-(<clue> ^connections <con>)
-(<con> -^word <word>)
-(<o> ^name add_connection_neg)
--->
-(<con> ^word <word>)
-(<s> ^clue <clue> -)
-(<s> ^attempts ( + <att> 1 ) 
-	^attempts <att> -
-	^prohibit <lti_clue1>)
-}
+ 
 
  sp {propose*operator*no_connections
 (state <s> ^type state
@@ -121,6 +108,8 @@ sp {apply*operator*add_connection_neg
 			^role clue_giver
 			^clue <clue>
 			^branch <branch>)
+(<clue> ^connections <con>)
+(<con> -^word <word>)
 -->
 (<s> ^operator <o> + =)
 (<o> ^name no_connection)
@@ -140,30 +129,30 @@ sp {apply*operator*no_connection
 (<o> ^name no_connection)
 -->
 (<clue> ^flag connects)
-(<s> ^attempts ( + <att> 1 ) 
-	^attempts <att> -
-	^prohibit <lti_clue1>)
+(<s> 	^prohibit <lti_clue1>)
 }
 
-sp {preference*select_operator_neg
+sp {prefrence*select_connect_over_results
 (state <s> ^type state
 			^name codeNames
 			^role clue_giver
-			^operator <o> +
+			^operator <o1> +
 			^operator <o2> +)
-(<o> ^name add_connection_neg)
-(<o2> ^name add_connection)
+(<o2> ^name result)
+(<o1> ^name add_connection)
 -->
-(<s> ^operator <o> > <o2>)
+(<s> ^operator <o1> > <o2>)
 }
 
-sp {elaborate*count
-(state <s> ^type state
-			^name codeNames
-			^role clue_giver
-			^clue <clue>)
-(<clue> ^connections <con>
-		^flag connects)
--->
-(<clue> ^num_assoc (size <con>) )
-}
+#sp {elaborate*count
+#(state <s> ^type state
+#			^name codeNames
+#			^role clue_giver
+#			^clue <clue>)
+#(<clue> ^connections <con>
+#		^flag connects)
+#(<con> ^word  <word>)
+#-->
+#(<clue> ^num_assoc (size <con>) )
+#(write |num assoc: | (size <con>) |. |)
+#}
