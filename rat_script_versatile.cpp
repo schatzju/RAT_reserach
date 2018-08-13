@@ -144,6 +144,8 @@ int main(int argc, char** argv){
     pAgent->LoadProductions(soar_source_loc.c_str());
     pAgent->ExecuteCommandLine(("smem --set path " + database_cp_loc).c_str());
     pAgent->ExecuteCommandLine("smem --set database file");
+    pAgent->ExecuteCommandLine(("srand 5 " + database_cp_loc).c_str());
+
 
     //put three words on the input link
     Identifier* pInputLink = pAgent->GetInputLink();
@@ -198,13 +200,14 @@ int main(int argc, char** argv){
 			
 			pAgent->Commit();
 
-			int step = 0;
-			
+			int step = 0;			
 			
 			//run while there isn't any new output.
 			do {
                 step++;
                 pAgent->RunSelf(1);
+               
+                //cout << pKernel->ExecuteCommandLine("print <s>",pAgent->GetAgentName()) << endl;
                 
             } while (!pAgent->Commands() && step < 400);
 
