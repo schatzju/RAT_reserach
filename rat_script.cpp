@@ -17,8 +17,6 @@
 using namespace std;
 using namespace sml;
 
-//const string database_loc = "new_hbc_double.db";
-//const string database_cp_loc = "new_hbc_double_cp.db";
 const string db_loc = ".db";
 const string db_cp_loc = "_cp.db";
 const string c_soar_source_loc = "models/cued_soar_agent/_load.soar";
@@ -50,18 +48,20 @@ int main(int argc, char** argv){
     string database_loc;
 	string database_cp_loc;
 	string database;
-
+    string output_path;
+    
 	//optional RAT problem specification
 	string rat_prob_file = "raw_144.txt";
 
-	if (argc < 4 |!(argv[1][0]=='f'|argv[1][0]=='c')) {
-		cerr << "error! pls specify mode and #attempt: f(ree recall) 1 || c(ued) n || database name" << endl;
+	if (argc < 3 |!(argv[1][0]=='f'|argv[1][0]=='c')) {
+		cerr << "error! pls specify mode and #attempt: f(ree recall) 1 || c(ued) n || <database name> || <path for output>" << endl;
 		exit(1);
 	}
 	else {
 		mode = argv[1][0];
 		num_attempt = atoi(argv[2]);
 		database = string(argv[3]);
+        output_path = string(argv[4]);
 
 		if(database.substr(database.length() - 3, 3) == ".db"){
 			cout << "WARNING: removing the .db from the database name inputed" << endl;
@@ -70,8 +70,8 @@ int main(int argc, char** argv){
 		database_loc = string(argv[3]) + db_loc;
 		database_cp_loc = string(argv[3]) + db_cp_loc;
 
-		if(argc == 5){
-			rat_prob_file = string(argv[4]);
+		if(argc == 6){
+			rat_prob_file = string(argv[5]);
 		}
 	}
    
@@ -83,7 +83,10 @@ int main(int argc, char** argv){
     if(mode == 'f') cout << "MODE: f ATTEMPTS: " << to_string(num_attempt) << endl;
     if(mode == 'c') cout << "MODE: c" << endl;
 
-    
+    //get database name without path
+    size_t found = database.find_last_of("/\\");
+    string database_name = database.substr(found+1);
+
 
 	//Read in rat examples ------------------
 	
@@ -164,16 +167,16 @@ int main(int argc, char** argv){
     StringElement* pID_word2 = pAgent->CreateStringWME(pID_card2, "word", " ");
     StringElement* pID_word3 = pAgent->CreateStringWME(pID_card3, "word", " ");
 
-	for (int j= 0; j < num_attempt; j++) {
+	for (int j= 1; j < num_attempt + 1; j++) {
 
 		ofstream datFile;
 		
 		if (mode == 'f') {
-			datFile.open("rat_out_freeRecall_" + to_string(num_attempt) + "_" + database + ".csv");
+			datFile.open(output_path + "/rat_out_freeRecall_" + to_string(j) + "_" + database_name + ".csv");
 			datFile << "word1,word2,word3,solution,result,attempts,connections,correct" << endl;
 		}
 		if (mode == 'c') {
-			datFile.open("rat_out_cued_" + database + ".csv");
+			datFile.open(output_path + "/rat_out_cued_" + database_name + ".csv");
 			datFile << "word1,word2,word3,solution,result,connections,correct" << endl;
 
 		}
@@ -196,7 +199,7 @@ int main(int argc, char** argv){
 			pAgent->Update(pID_word2, word2.c_str());
 			pAgent->Update(pID_word3, word3.c_str());
            
-            if (mode == 'f') pAgent->Update(max_num, num_attempt);
+            if (mode == 'f') pAgent->Update(max_num, j);
 			
 			pAgent->Commit();
 
