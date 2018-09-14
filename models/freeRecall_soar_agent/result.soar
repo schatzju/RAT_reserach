@@ -4,8 +4,9 @@ sp {propose*operator*result_attempts
 			^role clue_giver
 			^clue <clue>
 			^attempts <num>
-			^max-attempts <num>
-			-^phase connections)
+			^max-attempts <num>)
+#			-^phase connections) #phase connections is/was kinda janky
+(<clue> ^flag connects) #The logic here is to only propose reporting results for words that have had their connections counted.
 -->
 (<s> ^operator <o> + > =)
 (<o> ^name result
