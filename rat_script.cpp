@@ -1,4 +1,4 @@
-#include "../include/sml_Client.h"
+#include "sml_Client.h"
 #include <fstream>
 #include <map>
 #include <vector>
@@ -33,6 +33,7 @@ void removeWhitespace(std::string& str) {
 }
 
 void reset_database(string database_loc, string database_cp_loc){
+	cout << database_loc << endl;
     remove( database_cp_loc.c_str());
      std::ifstream  src(database_loc.c_str(), std::ios::binary);
      std::ofstream  dst(database_cp_loc.c_str(), std::ios::binary);
@@ -67,8 +68,8 @@ int main(int argc, char** argv){
 			cout << "WARNING: removing the .db from the database name inputed" << endl;
 			database.erase(database.length() - 3, 3);
 		}
-		database_loc = string(argv[3]) + db_loc;
-		database_cp_loc = string(argv[3]) + db_cp_loc;
+		database_loc = "smem_soar_databases/" + string(argv[3]) + db_loc;
+		database_cp_loc = "smem_soar_databases/" + string(argv[3]) + db_cp_loc;
 
 		if(argc == 6){
 			rat_prob_file = string(argv[5]);
@@ -117,9 +118,6 @@ int main(int argc, char** argv){
 		rat_word_data.push_back(word_tri);
 	}
 
-	//Used to store all results for creating a combined results file
-	vector< vector<unsigned int> > combined_results(rat_size);
-
     //-------------------------------------------
 	// Create an instance of the Soar kernel in our process
     Kernel* pKernel = sml::Kernel::CreateKernelInNewThread();
@@ -131,43 +129,42 @@ int main(int argc, char** argv){
         cout << pKernel->GetLastErrorDescription() << endl;
         return -1;
     }
-    
-    Agent* pAgent = pKernel->CreateAgent("rat_test");
-    
-    cout << "Initalized Agent" << endl;
-    if (pKernel->HadError())
-    {
-        cout << "No Agent Actually Gotten" << endl;
-        cout << pKernel->GetLastErrorDescription() << endl;
-        return -1;
-    }
-    
-    reset_database(database_loc, database_cp_loc);
 
-    pAgent->LoadProductions(soar_source_loc.c_str());
-    pAgent->ExecuteCommandLine(("smem --set path " + database_cp_loc).c_str());
-    pAgent->ExecuteCommandLine("smem --set database file");
-    pAgent->ExecuteCommandLine(("srand 5 " + database_cp_loc).c_str());
+    for (int j= 1; j < num_attempt + 1; j++){
+	    Agent* pAgent = pKernel->CreateAgent(("rat_test" + to_string(j)).c_str());
+	    
+	    cout << "Initalized Agent" << endl;
+	    if (pKernel->HadError())
+	    {
+	        cout << "No Agent Actually Gotten" << endl;
+	        cout << pKernel->GetLastErrorDescription() << endl;
+	        return -1;
+	    }
+	    
+	    reset_database(database_loc, database_cp_loc);
 
+	    pAgent->LoadProductions(soar_source_loc.c_str());
+	    pAgent->ExecuteCommandLine(("smem --set path " + database_cp_loc).c_str());
+	    pAgent->ExecuteCommandLine("smem --set database file");
+	    pAgent->ExecuteCommandLine(("srand 5 " + database_cp_loc).c_str());
 
-    //put three words on the input link
-    Identifier* pInputLink = pAgent->GetInputLink();
-        
-    Identifier* max_assoc;
-    if (mode == 'f') max_assoc = pAgent->CreateIdWME(pInputLink, "max-attempts");
-    if (mode == 'c') max_assoc = pAgent->CreateIdWME(pInputLink, "max_assoc");;
-    IntElement* max_num = pAgent->CreateIntWME(max_assoc, "num", num_attempt);
+	    //put three words on the input link
+	    Identifier* pInputLink = pAgent->GetInputLink();
+	        
+	    Identifier* max_assoc;
+	    if (mode == 'f') max_assoc = pAgent->CreateIdWME(pInputLink, "max-attempts");
+	    if (mode == 'c') max_assoc = pAgent->CreateIdWME(pInputLink, "max_assoc");;
+	    IntElement* max_num = pAgent->CreateIntWME(max_assoc, "num", num_attempt);
 
-    Identifier* pID_board = pAgent->CreateIdWME(pInputLink, "board");
-    Identifier* pID_card1 = pAgent->CreateIdWME(pID_board, "card");
-    Identifier* pID_card2 = pAgent->CreateIdWME(pID_board, "card");
-    Identifier* pID_card3 = pAgent->CreateIdWME(pID_board, "card");
+	    Identifier* pID_board = pAgent->CreateIdWME(pInputLink, "board");
+	    Identifier* pID_card1 = pAgent->CreateIdWME(pID_board, "card");
+	    Identifier* pID_card2 = pAgent->CreateIdWME(pID_board, "card");
+	    Identifier* pID_card3 = pAgent->CreateIdWME(pID_board, "card");
 
-    StringElement* pID_word1 = pAgent->CreateStringWME(pID_card1, "word", " ");
-    StringElement* pID_word2 = pAgent->CreateStringWME(pID_card2, "word", " ");
-    StringElement* pID_word3 = pAgent->CreateStringWME(pID_card3, "word", " ");
+	    StringElement* pID_word1 = pAgent->CreateStringWME(pID_card1, "word", " ");
+	    StringElement* pID_word2 = pAgent->CreateStringWME(pID_card2, "word", " ");
+	    StringElement* pID_word3 = pAgent->CreateStringWME(pID_card3, "word", " ");
 
-	for (int j= 1; j < num_attempt + 1; j++) {
 
 		ofstream datFile;
 		
@@ -223,9 +220,7 @@ int main(int argc, char** argv){
 					datFile << "NA,0" << endl;
 					break;
 				case 'f':
-					datFile << "NA,0,0";
-		
-					combined_results[i].push_back(0);
+					datFile << "NA,0,0" << endl;
 					cout << "NA" << endl;
 					break;
 				}
@@ -247,11 +242,9 @@ int main(int argc, char** argv){
                 
                     if(result == solution){
                         datFile << '1' << endl;
-                        combined_results[i].push_back(1);
                     }
                     else{
                         datFile << '0' << endl;
-                        combined_results[i].push_back(0);
                     }
                 }
 
@@ -268,26 +261,9 @@ int main(int argc, char** argv){
 			}
 
 			pAgent->ExecuteCommandLine("init");
-			reset_database(database_loc, database_cp_loc);
-
 		}//through 144
-		
-		if (mode == 'f') reset_database(database_loc, database_cp_loc);
-	}
+	}//through attempts
    
-   	//creating combined file
-	if (mode == 'f') {
-		ofstream comFile;
-		comFile.open("rat_out_freeRecall_combined_" + database + ".csv");
-
-		for (int i = 0; i < combined_results.size(); i++) {
-			for (int k = 0; k < combined_results[i].size() - 1; k++) {
-				comFile << combined_results[i][k] << ", ";
-			}
-			comFile << combined_results[i][combined_results[i].size() - 1] << endl;
-		}
-	}
-
     pKernel->Shutdown() ;   // Deletes all agents (unless using a remote connection)
     delete pKernel ;        // Deletes the kernel itself
     

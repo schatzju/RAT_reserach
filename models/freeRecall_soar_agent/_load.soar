@@ -2,6 +2,12 @@ wma --set activation on
 
 smem --set activation-mode base-level
 smem --set base-update-policy stable
+smem --set activate-on-query off
+#smem --set base-incremental-threshes 1
+#smem --set base-incremental-threshes 2
+#smem --set base-incremental-threshes 4
+#smem --set base-incremental-threshes 8
+#smem --set base-incremental-threshes 20
 
 smem --set spreading-depth-limit 1
 smem --set spreading-loop-avoidance on
