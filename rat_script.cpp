@@ -54,7 +54,7 @@ int main(int argc, char** argv){
 	//optional RAT problem specification
 	string rat_prob_file = "raw_144.txt";
 
-	if (argc < 3 |!(argv[1][0]=='f'|argv[1][0]=='c')) {
+	if (argc < 3 ||!(argv[1][0]=='f'|| argv[1][0]=='c')) {
 		cerr << "error! pls specify mode and #attempt: f(ree recall) 1 || c(ued) n || <database name> || <path for output>" << endl;
 		exit(1);
 	}
