@@ -49,13 +49,14 @@ int main(int argc, char** argv){
     string database_loc;
 	string database_cp_loc;
 	string database;
+	char* soar_settings;
     string output_path;
     
 	//optional RAT problem specification
 	string rat_prob_file = "raw_144.txt";
 
-	if (argc < 3 ||!(argv[1][0]=='f'|| argv[1][0]=='c')) {
-		cerr << "error! pls specify mode and #attempt: f(ree recall) 1 || c(ued) n || <database name> || <path for output>" << endl;
+	if (argc < 5 ||!(argv[1][0]=='f'|| argv[1][0]=='c')) {
+		cerr << "error! pls specify mode and #attempt: [f(ree recall) n || c(ued) 0]  <database name>  <path for output> <additional smem commands(optional)> <rat_file(optional)>" << endl;
 		exit(1);
 	}
 	else {
@@ -64,6 +65,13 @@ int main(int argc, char** argv){
 		database = string(argv[3]);
         output_path = string(argv[4]);
 
+        if(argc == 6){
+       		soar_settings = argv[5];
+        }
+
+        cout << soar_settings << endl;
+
+
 		if(database.substr(database.length() - 3, 3) == ".db"){
 			cout << "WARNING: removing the .db from the database name inputed" << endl;
 			database.erase(database.length() - 3, 3);
@@ -71,8 +79,8 @@ int main(int argc, char** argv){
 		database_loc = "smem_soar_databases/" + string(argv[3]) + db_loc;
 		database_cp_loc = "smem_soar_databases/" + string(argv[3]) + db_cp_loc;
 
-		if(argc == 6){
-			rat_prob_file = string(argv[5]);
+		if(argc == 7){
+			rat_prob_file = string(argv[6]);
 		}
 	}
    
@@ -146,6 +154,7 @@ int main(int argc, char** argv){
 	    pAgent->LoadProductions(soar_source_loc.c_str());
 	    pAgent->ExecuteCommandLine(("smem --set path " + database_cp_loc).c_str());
 	    pAgent->ExecuteCommandLine("smem --set database file");
+	    pAgent->ExecuteCommandLine(soar_settings);
 	    pAgent->ExecuteCommandLine(("srand 5 " + database_cp_loc).c_str());
 
 	    //put three words on the input link
