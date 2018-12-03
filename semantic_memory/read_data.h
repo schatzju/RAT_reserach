@@ -27,7 +27,7 @@ using namespace std;
 //The function fills the word_word_weight map with all rows from the HBC dataset where word1 and
 //word2 are found in the dictionary. It fills the unigrams map with every word seen in the valid
 //rows and assigns each word a unique identifier.
-void read_hbc_data(unordered_set<string> &dictionary, unordered_map< pair<string, string> , int, pairHasher> &word_word_weight, unordered_map<string, int> &unigrams, bool dict_on);
+void read_hbc_data(unordered_set<string> &dictionary, unordered_map< pair<string, string> , int, pairHasher> &word_word_weight, unordered_map<string, int> &unigrams, string file_name, bool dict_on);
 
 //The function fills the word_word_weight map with all rows from the pruned 2-grams COCA dataset where
 //word1 and word2 are found in the dictionary and any word1 word2 combinations that forms a before seen

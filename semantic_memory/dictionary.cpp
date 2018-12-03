@@ -9,7 +9,7 @@ void create_dictionary(unordered_set<string> &dictionary, string file_in)
     ifstream fin;
     fin.open(file_in);
     if(!fin.is_open()) {
-        cout << "Error opening words.txt!" << endl;
+        cout << "Error opening " + file_in + "!" << endl;
         exit(1);
     }
 

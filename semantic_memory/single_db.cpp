@@ -12,54 +12,44 @@
 using namespace std;
 // unordered_map< string, int> &nodeCounts,
 
+static void write_unigrams(unordered_map<string, int> &unigrams, stringstream &out){
+    for(auto unigram: unigrams){
+        out << "\t(<" << unigram.second << "> ^word " << unigram.first << ") \n";
+    }
+    cout << "Word Count: " << unigrams.size() << endl;
+}
+
+static void write_connections(unordered_map< pair<string, string> , int, pairHasher> &word_word_weight,unordered_map<string, int> &unigrams, stringstream &out){
+    int assoc_count = 0;
+
+    for(auto www_iter : word_word_weight){
+        string word1 = www_iter.first.first;
+        string word2 = www_iter.first.second;
+        int weight = www_iter.second;
+        
+        assoc_count++;
+
+        out << "\t(<" << unigrams[word1] << "> ^assoc " << "<" << unigrams[word2] << "> (" << weight <<  ".0)) \n";    
+    }
+
+    cout << "Association Count: " << assoc_count << endl;
+ }
+
 void single_db(unordered_map< pair<string, string> , int, pairHasher> &word_word_weight, unordered_map<string, int> &unigrams, unordered_map< string, int> &fan, string name){
   
     //create stream for soar output
     stringstream out;
     out << "smem --add { \n";
     
-    for(auto unigram: unigrams){
-        out << "\t(<" << unigram.second << "> ^word " << unigram.first << ") \n";
-    }
-    
-    unordered_map<string, int> unigrams_orig = unigrams;
-    unordered_map< pair<string, string> , int, pairHasher> word_word_weight_sub;
-    int assoc_count = 0;
-    
-    for(auto www_iter : word_word_weight){
-        string word1 = www_iter.first.first;
-        string word2 = www_iter.first.second;
-        int weight = www_iter.second;
-        
-        if(unigrams_orig.find(word1) != unigrams_orig.end() || unigrams_orig.find(word2) != unigrams_orig.end()){
-            
-            if(unigrams.find(word1) == unigrams.end()){
-                int size = (int)unigrams.size();
-                unigrams[word1] = size;
-                out << "\t(<" << size << "> ^word " << word1 << ") \n";
-            }
-            if(unigrams.find(word2) == unigrams.end()){
-                int size = (int)unigrams.size();
-                unigrams[word2] = size;
-                out << "\t(<" << size << "> ^word " << word2 << ") \n";
-            }
-        
-            assoc_count++;
-            word_word_weight_sub[pair<string,string>(word1, word2)] = weight;
-            out << "\t(<" << unigrams[word1] << "> ^assoc " << "<" << unigrams[word2] << "> (" << weight <<  ".0)) \n";
-        }
-        
-    }
-    cout << "word count: " << unigrams.size();
+    //(<word> ^word <id_num>)
+    write_unigrams(unigrams, out);
 
-    
-    //creates output csv file of RAT item solutions this data contains
-    rat_check(word_word_weight_sub, name + "_solution.csv");
+    //(<id_num1> ^assoc <id_num2> (weight.0))
+    write_connections(word_word_weight, unigrams, out);
     
     out << "}";
     
-    cout << name << endl;
-    cout << "Association count: " << assoc_count << endl;
+    cout << "writing " + name << endl;
     
     ofstream datFile;
     datFile.open(name + ".soar");

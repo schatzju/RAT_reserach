@@ -23,42 +23,70 @@
 
 using namespace std;
 
-void hbc(unordered_set<string> &dictionary, bool single_, bool double_, bool dict_on, vector<int> subset = {}){
-    if( !single_ && !double_) return;
-    
-    //all unique words in the data and its unique identifier
+void hbc(unordered_set<string> &dictionary, bool single_, bool double_, bool dict_on, string file_in){
+
+    string file_out;
+        
+    //all unique words in the data and its unique identifier.
     unordered_map<string, int> unigrams_hbc;
     
-    //maps word1, word2 to it's association weight.
+    //maps word1, word2 to its association weight.
     unordered_map< pair<string, string> , int, pairHasher> word_word_weight_hbc;
     
-    
-    if(subset.size() > 0){
-        read_hbc_data_subset(dictionary, word_word_weight_hbc, unigrams_hbc, dict_on, subset);
-    }
-    else{
-        read_hbc_data(dictionary, word_word_weight_hbc, unigrams_hbc, dict_on);
-    }
-    
+    //fills unigrams_hbc and word_word_weight_hbc
+    read_hbc_data(dictionary, word_word_weight_hbc, unigrams_hbc, file_in, dict_on);
+   
     //---------------------single-----------------------//
     if(single_){
-        unordered_map< string, int> hbc_single_fan;
-        unordered_map< pair<string, string> , int, pairHasher> word_word_weight_hbc_single = word_word_weight_hbc;
+        cout << "running HBC single" << endl;
+        
+        //keeps track of the number of outgoing links from each word
+        unordered_map< string, int > hbc_single_fan;
+
+        //creates a copy of word_word_weight for hbc single
+        unordered_map< pair<string, string > , int, pairHasher> word_word_weight_hbc_single = word_word_weight_hbc;
+                
         if(dict_on){
-            single_db(word_word_weight_hbc_single, unigrams_hbc, hbc_single_fan, "hbc_single");
+            file_out = "hbc_single";
         }
         else{
-            single_db(word_word_weight_hbc_single, unigrams_hbc, hbc_single_fan, "hbc_single_trash_sub");
+            file_out = "hbc_single_trash";
         }
+
+        //TODO: ADD DATE STAMP TO FILE NAME
+
+        //writes .soar outputfile
+        single_db(word_word_weight_hbc_single, unigrams_hbc, hbc_single_fan, file_out);
+        
+        //creates output csv file of RAT item solutions this data contains
+        rat_check(word_word_weight_hbc_single, file_out + "_solution.csv");
+        
         cout << endl;
     }
     
     //---------------------double-----------------------//
     if(double_){
-        unordered_map< string, int> hbc_double_fan;
-        unordered_map< pair<string, string> , int, pairHasher> word_word_weight_hbc_double = word_word_weight_hbc;
-        double_db(word_word_weight_hbc_double, unigrams_hbc, hbc_double_fan, "hbc_double");
+        cout << "running HBC double" << endl;
         
+        //keeps track of the number of outgoing links from each word
+        unordered_map< string, int> hbc_double_fan;
+        
+        //creates a copy of word_word_weight for hbc double
+        unordered_map< pair<string, string> , int, pairHasher> word_word_weight_hbc_double = word_word_weight_hbc;
+        
+        if(dict_on){
+            file_out = "hbc_double";
+        }
+        else{
+            file_out = "hbc_double_trash";
+        }
+
+        //writes .soar outputfile
+        double_db(word_word_weight_hbc_double, unigrams_hbc, hbc_double_fan, file_out);
+        
+        //creates output csv file of RAT item solutions this data contains
+        rat_check(word_word_weight_hbc_double, file_out + "_solution.csv");
+
         cout << endl;
     }
 }
@@ -72,31 +100,67 @@ void COCA_TG(unordered_set<string> &dictionary){
     double_db(word_word_weight_COCA_TG, unigrams_COCA_TG, COCA_TG_double_fan, "COCA_TG_double");
 }
 
+//TODO how to print out bools
+/*
+void print_params(string dictionary_file, bool single_, bool double_, bool dict_on, string file_in){
+    cout << "dictionary: " + string(dict_on) << endl;
+    if(dict_on){
+        cout << "dictionary file: " + dictionary_file << endl;;
+    }
+    cout << "single: " + string(single_) << endl;
+    cout << "double: " + string(double_) << endl;
+    cout << "file in: " + string(file_in) << endl;
 
-int main(){
-    cout << "starting script..." << endl;
+}
+*/
+
+int main(int argc, char* argv[]){
+
+    //parameters needed: dictionary, dictionary file, single, double, file in name
+    string file_in, file_out, dict_file;
+    bool dictionary_param = false;
+    bool single_param = false;
+    bool double_param = false;
+
     unordered_set<string> dictionary;
-    
-    create_dictionary(dictionary, "words.txt");
+
+    if(argc != 6 && argc != 5){
+        cout << "Error with input! please input: dict, dictionary file (if dict true), single, double, file in name" <<endl;
+        exit(1);
+    }
+
+    cout << "starting semantic memory generation..." << endl;
+
+    int index = 1;
+
+    if(string(argv[index++]) == "true"){
+        dictionary_param = true;
+        dict_file = string(argv[index++]);
+        create_dictionary(dictionary, dict_file);
+    }
+
+    if(string(argv[index++]) == "true"){
+        single_param = true;
+    }
+
+    if(string(argv[index++]) == "true"){
+        double_param = true;
+    }
+
+    if(argc == index){
+        cout << "Error with input! please input: dict, dictionary file (if dict true), single, double, file in name" <<endl;
+        exit(1);
+    }
+
+    file_in = string(argv[index]);
+
+   // print_params(dict_file, single_param, double_param, dictionary_param, file_in);
+
     
     //collocation check is not currently being done because the collocation dataset seemed incomplete
     //unordered_map<string, unordered_set<string> > collocations;
     //create_collocations(collocations);
-    
-    bool run_single = true;
-    bool run_double = false;
 
-    cout << "not dict and subset" << endl;
-
-    vector<int> subset = {7, 18, 32, 53, 128};
-    
-    sort(subset.begin(), subset.end());
-    hbc(dictionary, run_single, run_double, true, subset);
-    
-    //cout <<"WITH DICT" << endl;
-    //hbc(dictionary, run_single, run_double, true);
-
-    
-    //COCA_TG(dictionary);
+    hbc(dictionary, single_param, double_param, dictionary_param, file_in);
     
 }

@@ -7,40 +7,12 @@
 //
 
 #include "read_data.h"
-void read_hbc_data_subset(unordered_set<string> &dictionary, unordered_map< pair<string, string> , int, pairHasher> &word_word_weight, unordered_map<string, int> &unigrams, bool dict_on, vector<int> subset){
-    
-    read_data(dictionary, word_word_weight, unigrams, "assoc_17.csv", dict_on);
-    
-    unigrams.clear();
-    
-    ifstream inFile;
-    inFile.open("raw_144.txt");
-    
-    ofstream outFile;
-    outFile.open("raw_144_sub.txt");
-    
-    string word1, word2, word3, solution;
-    
-    int count = 1;
-    
-    int unique_id = 0;
-    
-    while(inFile >> word1 >> word2 >> word3 >> solution){
-        if(find_vect(subset, count)){
-            outFile << word1 << " " << word2 << " " << word3 << " " << solution << endl;
-            unigrams[word1] = unique_id++;
-            unigrams[word2] = unique_id++;
-            unigrams[word3] = unique_id++;
-            unigrams[solution] = unique_id++;
-        }
-        count++;
-    }
-        
-}
 
-void read_hbc_data(unordered_set<string> &dictionary, unordered_map< pair<string, string> , int, pairHasher> &word_word_weight, unordered_map<string, int> &unigrams, bool dict_on){
+//string const FILE_NAME = "assoc_17_08_22_18.csv";
+
+void read_hbc_data(unordered_set<string> &dictionary, unordered_map< pair<string, string> , int, pairHasher> &word_word_weight, unordered_map<string, int> &unigrams, string file_name, bool dict_on){
     
-    read_data(dictionary, word_word_weight, unigrams, "assoc_17.csv", dict_on);
+    read_data(dictionary, word_word_weight, unigrams, file_name, dict_on);
 }
 
 void read_COCA_TG_data(unordered_set<string> &dictionary, unordered_map< pair<string, string> , int, pairHasher> &word_word_weight, unordered_map<string, int> &unigrams, int weight_compound){
@@ -108,15 +80,17 @@ void read_data(unordered_set<string> &dictionary, unordered_map< pair<string, st
         getline(file, word2, ',');
         getline(file, weight);
         
+        //turns words to all lowercase
         transform(word1.begin(), word1.end(), word1.begin(), ::tolower);
         transform(word2.begin(), word2.end(), word2.begin(), ::tolower);
 
         //this prunes out items with multiple words
-        //if words in are made of only letters (no spaces, characters, or numbers)
-        if(word1 != "ing" && word2 != "ing" && std::regex_match(word1, std::regex("^[A-Za-z]+$")) && std::regex_match(word2, std::regex("^[A-Za-z]+$"))){
+        //if words are made of only letters (no spaces, characters, or numbers)
+        if(std::regex_match(word1, std::regex("^[A-Za-z]+$")) && std::regex_match(word2, std::regex("^[A-Za-z]+$"))){
             
             //if both words are in the dictionary
             if(dict_on == false || (dictionary.find(word1) != dictionary.end() && dictionary.find(word2) != dictionary.end())){
+                
                 
                 //adds word1 to unigrams if it isn't already there and gives it a unique identifier
                 if(unigrams.find(word1) == unigrams.end()){
@@ -131,18 +105,48 @@ void read_data(unordered_set<string> &dictionary, unordered_map< pair<string, st
                 }
                 
                 //stores association between word1, word2 with weight
-                if(word_word_weight.find(make_pair(word1, word2)) != word_word_weight.end()){
-                    word_word_weight[make_pair(word1, word2)] = word_word_weight[make_pair(word1, word2)] + stoi
-                    (weight);
+                if(word_word_weight.find(make_pair(word1, word2)) == word_word_weight.end()){
+                    word_word_weight[make_pair(word1, word2)] = stoi(weight);
                 }
                 else{
-                    word_word_weight[pair<string, string>(word1, word2)] = stoi(weight);
+                    cout << "multiple instances of word1 word 2, " + word1 + " " + word2;
                 }
                 count_assoc++;
-                
-            }
-        }
-    }
-    
-    cout << "WORDS: " << count << endl;
+
+            }//dict if
+        }//letters if
+    }//file loop
 }
+
+/*
+void read_hbc_data_subset(unordered_set<string> &dictionary, unordered_map< pair<string, string> , int, pairHasher> &word_word_weight, unordered_map<string, int> &unigrams, bool dict_on, vector<int> subset){
+    
+    read_data(dictionary, word_word_weight, unigrams, FILE_NAME, dict_on);
+    
+    unigrams.clear();
+    
+    ifstream inFile;
+    inFile.open("raw_144.txt");
+    
+    ofstream outFile;
+    outFile.open("raw_144_sub.txt");
+    
+    string word1, word2, word3, solution;
+    
+    int count = 1;
+    
+    int unique_id = 0;
+    
+    while(inFile >> word1 >> word2 >> word3 >> solution){
+        if(find_vect(subset, count)){
+            outFile << word1 << " " << word2 << " " << word3 << " " << solution << endl;
+            unigrams[word1] = unique_id++;
+            unigrams[word2] = unique_id++;
+            unigrams[word3] = unique_id++;
+            unigrams[solution] = unique_id++;
+        }
+        count++;
+    }
+        
+}
+*/
