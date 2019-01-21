@@ -14,6 +14,7 @@
 #include <unordered_map>
 #include <regex>
 #include <unordered_set>
+#include <ctime>
 #include "single_db.h"
 #include "double_db.h"
 #include "dictionary.h"
@@ -23,9 +24,9 @@
 
 using namespace std;
 
-void hbc(unordered_set<string> &dictionary, bool single_, bool double_, bool dict_on, string file_in){
+void hbc(unordered_set<string> &dictionary, bool single_, bool double_, bool dict_on, string file_in, string file_out_prefix){
 
-    string file_out;
+    string file_out = file_out_prefix;
         
     //all unique words in the data and its unique identifier.
     unordered_map<string, int> unigrams_hbc;
@@ -35,6 +36,11 @@ void hbc(unordered_set<string> &dictionary, bool single_, bool double_, bool dic
     
     //fills unigrams_hbc and word_word_weight_hbc
     read_hbc_data(dictionary, word_word_weight_hbc, unigrams_hbc, file_in, dict_on);
+    
+    //getting current date
+    std::time_t t = std::time(0);   // get time now
+    std::tm* now = std::localtime(&t);
+    file_out = file_out + "_" + to_string(now->tm_mon+1) + "_" + to_string(now->tm_mday) + "_" + to_string(now->tm_year +1900);
    
     //---------------------single-----------------------//
     if(single_){
@@ -47,13 +53,11 @@ void hbc(unordered_set<string> &dictionary, bool single_, bool double_, bool dic
         unordered_map< pair<string, string > , int, pairHasher> word_word_weight_hbc_single = word_word_weight_hbc;
                 
         if(dict_on){
-            file_out = "hbc_single";
+            file_out = file_out + "_hbc_single";
         }
         else{
-            file_out = "hbc_single_trash";
+            file_out = file_out + "_hbc_single_trash";
         }
-
-        //TODO: ADD DATE STAMP TO FILE NAME
 
         //writes .soar outputfile
         single_db(word_word_weight_hbc_single, unigrams_hbc, hbc_single_fan, file_out);
@@ -117,15 +121,16 @@ void print_params(string dictionary_file, bool single_, bool double_, bool dict_
 int main(int argc, char* argv[]){
 
     //parameters needed: dictionary, dictionary file, single, double, file in name
-    string file_in, file_out, dict_file;
+    string file_in, file_out, dict_file, file_out_prefix;
     bool dictionary_param = false;
     bool single_param = false;
     bool double_param = false;
 
     unordered_set<string> dictionary;
 
-    if(argc != 6 && argc != 5){
-        cout << "Error with input! please input: dict, dictionary file (if dict true), single, double, file in name" <<endl;
+    //true words.txt true false assoc_17_08_22_18.csv
+    if(argc != 7 && argc != 6){
+        cout << "Error with input! please input: dict, dictionary file (if dict true), single, double, file in name, file out name" << endl;
         exit(1);
     }
 
@@ -152,7 +157,9 @@ int main(int argc, char* argv[]){
         exit(1);
     }
 
-    file_in = string(argv[index]);
+    file_in = string(argv[index++]);
+    
+    file_out_prefix = string(argv[index]);
 
    // print_params(dict_file, single_param, double_param, dictionary_param, file_in);
 
@@ -161,6 +168,6 @@ int main(int argc, char* argv[]){
     //unordered_map<string, unordered_set<string> > collocations;
     //create_collocations(collocations);
 
-    hbc(dictionary, single_param, double_param, dictionary_param, file_in);
+    hbc(dictionary, single_param, double_param, dictionary_param, file_in, file_out_prefix);
     
 }

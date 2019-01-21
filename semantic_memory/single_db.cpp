@@ -8,18 +8,23 @@
 #include "dictionary.h"
 #include "RAT_solution_check.h"
 #include "single_db.h"
+#include "filters.h"
 
 using namespace std;
 // unordered_map< string, int> &nodeCounts,
 
 static void write_unigrams(unordered_map<string, int> &unigrams, stringstream &out){
     for(auto unigram: unigrams){
+        if(unigram.first == "high"){
+            cout << "high" <<endl;
+        }
         out << "\t(<" << unigram.second << "> ^word " << unigram.first << ") \n";
     }
     cout << "Word Count: " << unigrams.size() << endl;
 }
 
-static void write_connections(unordered_map< pair<string, string> , int, pairHasher> &word_word_weight,unordered_map<string, int> &unigrams, stringstream &out){
+template <class T>
+static void write_connections(unordered_map< pair<string, string> , int, pairHasher> &word_word_weight,unordered_map<string, int> &unigrams, stringstream &out, T filter){
     int assoc_count = 0;
 
     for(auto www_iter : word_word_weight){
@@ -27,9 +32,10 @@ static void write_connections(unordered_map< pair<string, string> , int, pairHas
         string word2 = www_iter.first.second;
         int weight = www_iter.second;
         
-        assoc_count++;
-
-        out << "\t(<" << unigrams[word1] << "> ^assoc " << "<" << unigrams[word2] << "> (" << weight <<  ".0)) \n";    
+        if(filter(weight)){
+            assoc_count++;
+            out << "\t(<" << unigrams[word1] << "> ^assoc " << "<" << unigrams[word2] << "> (" << weight <<  ".0)) \n";
+        }
     }
 
     cout << "Association Count: " << assoc_count << endl;
@@ -45,7 +51,10 @@ void single_db(unordered_map< pair<string, string> , int, pairHasher> &word_word
     write_unigrams(unigrams, out);
 
     //(<id_num1> ^assoc <id_num2> (weight.0))
-    write_connections(word_word_weight, unigrams, out);
+    
+    Thresh filterThresh(2);
+    
+    write_connections(word_word_weight, unigrams, out, filterThresh);
     
     out << "}";
     
