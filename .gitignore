@@ -3,5 +3,6 @@
 *.soar~
 *.db
 *.zip
+*hbc*.soar
 *DerivedData/
 smem_script/smem_hbc_cleaning.xcodeproj/*
