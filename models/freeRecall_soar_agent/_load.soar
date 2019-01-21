@@ -1,13 +1,13 @@
 wma --set activation on
 
 smem --set activation-mode base-level
-smem --set base-update-policy stable
-smem --set activate-on-query off
-#smem --set base-incremental-threshes 1
-#smem --set base-incremental-threshes 2
-#smem --set base-incremental-threshes 4
-#smem --set base-incremental-threshes 8
-#smem --set base-incremental-threshes 20
+smem --set base-update-policy incremental
+smem --set activate-on-query on
+smem --set base-incremental-threshes 1
+smem --set base-incremental-threshes 2
+smem --set base-incremental-threshes 4
+smem --set base-incremental-threshes 8
+smem --set base-incremental-threshes 20
 
 smem --set spreading-depth-limit 1
 smem --set spreading-loop-avoidance on
@@ -21,7 +21,7 @@ smem --set learning on
 
 chunk never
 
-#smem --set path /Users/schatzju/Documents/Soar/out/sub_hbc_single_trash_cp.db 
+#smem --set path /Users/schatzju/Dropbox/soar/codeNames/RAT/rat_script/smem_soar_databases/hbc_single_trash_cp.db
 #smem --set database file
 
 source initialize.soar

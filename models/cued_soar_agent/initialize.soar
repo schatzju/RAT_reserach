@@ -16,11 +16,12 @@ sp {apply*initialize-RAT-solver
 (<s> ^name RAT
 	^role <role>
 	^branch <branch>
+	^retrieved <retrieved>
 	^branch <branch2a>
 	^branch <branch2b>
 	^branch <branch2c>
 	#^branch <branch13>
-    #^io <iox>
+#    ^io <iox>
 )
 (<branch> ^elements <elements1>
 		^count 3
@@ -37,16 +38,13 @@ sp {apply*initialize-RAT-solver
 		^count 2
 		^number 2
 		^id 2C)
-#(<branch13> ^elements <elements>
-#		^count 1
-#		^role <c>)
-#(<iox> ^input-link <in>)
-#(<in> ^board <board>)
-#(<board> ^card <card1>)
-# (<card1> ^word rocking)
+# (<iox> ^input-link <in>)
+# (<in> ^board <board>)
+# (<board> ^card <card1>)
+# (<card1> ^word fly)
 # (<board> ^card <card2>)
-# (<card2> ^word wheel)
+# (<card2> ^word clip)
 # (<board> ^card <card3>)
-# (<card3> ^word high)
+# (<card3> ^word wall)
 (write |Initialized|)
 }

@@ -24,7 +24,6 @@ sp {apply*operator*get_input
 sp {elaborate*load_cards_phase
 (state <s> ^type state
 			^name RAT
-			-^retrieved <ret>
 			^role solver
 			^board.card.needs_retrieve <var>)
 -->
@@ -37,15 +36,11 @@ sp {elaborate*not_in_wm
 			^name RAT
 			^role solver
 			^board.card <card>
-			-^branch.elements.assoc.word <word>)
-(<card> ^word <word>
-		-^failed <failed>)
+			-^retrieved.word <word>)
+(<card> ^word <word>)
 -->
 (<card> ^needs_retrieve <var>)
 }
-
-#idea make 1 + 3 + 3 branches each with all words
-#make sure two have removed 
 
 
 #if the board card isn't in working memory get clue from smem
@@ -137,6 +132,7 @@ sp {apply*operator*add_lti_wm
 			^smem.command <cmd>
 			^board <board>
 			^branch <branch>
+			^retrieved <ret>
 			^smem.result.retrieved <retrieved>) 
 (<retrieved> ^word <word>)
 (<board> ^card <card>)
@@ -149,6 +145,7 @@ sp {apply*operator*add_lti_wm
 (<query> ^word <word>)
 -->
 (<s> ^prohibit <retrieved>)
+(<ret> ^word <word>)
 (<elem> ^assoc <retrieved>)
 (<cmd> ^query <query> -)
 }

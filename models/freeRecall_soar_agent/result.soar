@@ -45,7 +45,66 @@ sp {apply*operator*result
 	^num (size <con>)
 	^attempts <attm>)
 (write <word> | attempts: | <attm> | connections: |(size <con>) | solution: |)
-(<clue> ^picked <x>)
+(<s> ^done <x>)
+}
+
+sp {propose*operator*finished
+(state <s> ^type state
+			^name codeNames
+			^role clue_giver
+			^done <x>)
+-->
+(<s> ^operator <o> + >)
+(<o> ^name finished)
+}
+
+sp {apply*operator*finished_branch
+(state <s> ^type state
+			^name codeNames
+			^role clue_giver
+			^operator <o>
+			^branch <branch>)
+(<o> ^name finished)
+-->
+(<s> ^branch <branch> -)
+
+}
+
+sp {apply*operator*finished_single
+(state <s> ^type state
+			^name codeNames
+			^role clue_giver
+			^operator <o>
+			^done <x>
+			^board <b1>
+			^clue <c1>
+			^attempts <t>
+			^max-attempts <mt>)
+(<o> ^name finished)
+-->
+(<s> ^done <x> -
+	^board <b1> -
+	^clue <c1> -
+	^attempts <t> -
+	^attempts 0
+	^max-attempts <mt> -)
+
+}
+
+sp {apply*operator*finished_pro
+(state <s> ^type state
+			^name codeNames
+			^role clue_giver
+			^operator <o>
+			^prohibit <pro>
+			^smem.command <cmd>)
+(<o> ^name finished)
+-->
+(<s> ^prohibit <pro> -
+	^board <board> -
+	^name RAT -
+	^role solver -)
+(<cmd> ^prohibit <pro> -)
 }
 
 sp {elaborate*print_solution
@@ -70,7 +129,6 @@ sp {prefrence*select_operator_finish
 (<s> ^operator <o2> > <o>)
 }
 
-
 sp {prefrence*select_operator_result_num
 (state <s> ^type state
 			^name codeNames
@@ -86,7 +144,6 @@ sp {prefrence*select_operator_result_num
 -->
 (<s> ^operator <o1> > <o2>)
 }
-
 
 sp {prefrence*select_operator_result_has_num
 (state <s> ^type state

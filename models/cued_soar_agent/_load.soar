@@ -22,12 +22,15 @@ smem --set learning on
 
 chunk never
 
-source /Users/schatzju/Dropbox/soar/codeNames/smem_script/smem_script/smem_Soar/hbc_single.soar
+
+#For debugging 
+#smem --set path thresh2_1_7_2019_hbc_single_cp.db
+#smem --set database file
+
+
+
 source initialize.soar
 source load_cards_wm.soar
 source query_smem.soar
 source result.soar
 source load_branches.soar
-source last_result.soar
-#source smem_test_data.soar
-#source smem_test_4b.soar

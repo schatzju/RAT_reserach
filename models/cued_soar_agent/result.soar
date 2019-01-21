@@ -1,3 +1,4 @@
+
 sp {propose*operator*result
 (state <s> ^type state
 			^name RAT
@@ -86,6 +87,20 @@ sp {apply*operator*finished_branch
 
 }
 
+sp {apply*operator*finished_first
+	(state <s> ^type state
+			^operator <o>
+			^board <board>
+			^retrieved <ret>)
+	(<o> ^name finished)
+-->
+(<s> ^board <board> -
+	^name RAT -
+	^role solver -
+	^retrieved <ret> -)
+}
+
+
 sp {apply*operator*finished_pro
 (state <s> ^type state
 			^name RAT
@@ -95,10 +110,7 @@ sp {apply*operator*finished_pro
 			^smem.command <cmd>)
 (<o> ^name finished)
 -->
-(<s> ^prohibit <pro> -
-	^board <board> -
-	^name RAT -
-	^role solver -)
+(<s> ^prohibit <pro> -)
 (<cmd> ^prohibit <pro> -)
 }
 

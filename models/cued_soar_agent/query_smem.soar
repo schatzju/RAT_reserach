@@ -18,7 +18,7 @@ sp {propose*operator*create_result_smem
 			^phase query_branch
 			-^smem.command.query <cmd>)
 (<branch> -^status <stat>
-			-^count 2
+			^count 3
 			^elements <elem>)
 -->
 (<s> ^operator <o> + > =)
@@ -40,6 +40,20 @@ sp {propose*operator*create_result_smem_two
 	^elements <elem>)
 }
 
+sp {propose*operator*create_result_smem_one
+(state <s> ^type state
+			^branch <branch>
+			^phase query_branch
+			-^smem.command.query <cmd>)
+(<branch> -^status <stat>
+			^count 1
+			^elements <elem>)
+-->
+(<s> ^operator <o> + =)
+(<o> ^name create_result_smem
+	^elements <elem>)
+}
+
 
 sp {apply*operator*create_result_smem
 (state <s> ^type state
@@ -53,7 +67,7 @@ sp {apply*operator*create_result_smem
 -->
 (<cmd> ^prohibit <pro>
 		^query <elem>)
-(<s> ^retrieved <ret>)
+#(<s> ^retrieved <ret>)
 }
 
 
@@ -108,5 +122,29 @@ sp {apply*operator*move_results_fail
 (<s> ^branch <branch> -)
 (<cmd> ^query <elem> -)
 }
+
+sp {propose*operator*single_result
+(state <s> ^type state
+			^name RAT
+			^role solver
+			-^branch <branch>
+			^retrieved <ret>)
+-->
+(<s> ^operator <o> + = >)
+(<o> ^name create_single_branch)
+}
+
+sp {apply*operator*create_single_branch
+(state <s> ^type state
+			^operator <o>
+			^prohibit <word>)
+(<o> ^name create_single_branch)
+-->
+(<s> ^branch <branch>)
+(<branch> ^elements <elem>
+			^count 1)
+(<elem> ^assoc <word>)
+}
+
 
 

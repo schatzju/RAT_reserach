@@ -13,6 +13,8 @@
 #include <stdio.h> //rename
 #include <getopt.h>
 #include <sys/stat.h>
+#include <chrono>       // std::chrono::system_clock
+
 
 using namespace std;
 using namespace sml;
@@ -32,6 +34,12 @@ void removeWhitespace(std::string& str) {
     }
 }
 
+bool is_file_exist(const char *fileName)
+{
+    std::ifstream infile(fileName);
+    return infile.good();
+}
+
 void reset_database(string database_loc, string database_cp_loc){
 	cout << database_loc << endl;
     remove( database_cp_loc.c_str());
@@ -44,53 +52,88 @@ void reset_database(string database_loc, string database_cp_loc){
 
 int main(int argc, char** argv){
 	char mode = 'x';
-	int num_attempt = -1;
+	int num_attempt_start = 0;
+	int num_attempt_end = 0;
     string soar_source_loc = f_soar_source_loc;
     string database_loc;
 	string database_cp_loc;
 	string database;
+	string output_path;
 	char* soar_settings;
-    string output_path;
-    
+	bool rand = false;
+
 	//optional RAT problem specification
 	string rat_prob_file = "raw_144.txt";
 
-	if (argc < 5 ||!(argv[1][0]=='f'|| argv[1][0]=='c')) {
-		cerr << "error! pls specify mode and #attempt: [f(ree recall) n || c(ued) 0]  <database name>  <path for output> <additional smem commands(optional)> <rat_file(optional)>" << endl;
+	if (argc < 3 ||!(argv[1][0]=='f'|| argv[1][0]=='c')) {
+		cerr << "error! pls specify mode and #attempts start and #attempts end: [f(ree recall) n n+ || c(ued)] <randomize RAT items T or F> <database name>  <path for output> <additional smem commands> <rat_file(optional)> " << endl;
 		exit(1);
 	}
-	else {
-		mode = argv[1][0];
-		num_attempt = atoi(argv[2]);
+
+	mode = argv[1][0];
+
+	if(argv[2][0] == 'T'){
+		rand = true;
+	}
+
+	if(mode == 'f'){
+
+		if(argc < 6){
+			cerr << "error! for the free recall agent please specify at least #attempt_start #attempt_end database_name output_path" << endl;
+			exit(1);
+		}
+
+		num_attempt_start = atoi(argv[3]);
+		num_attempt_end = atoi(argv[4]);
+
+		database = string(argv[5]);
+        output_path = string(argv[6]);
+
+
+        if(argc >= 8){
+       		soar_settings = argv[7];
+        }
+
+        if(argc == 9){
+       		rat_prob_file = string(argv[8]);
+        }
+
+        cout << "MODE: f ATTEMPTS: " << to_string(num_attempt_end) << endl;
+	}
+		
+	if(mode == 'c'){
+		soar_source_loc = c_soar_source_loc;
+
+		num_attempt_start = 1;
+		num_attempt_end = 1;
+
 		database = string(argv[3]);
         output_path = string(argv[4]);
 
-        if(argc == 6){
+        if(argc >= 6){
        		soar_settings = argv[5];
         }
 
-        cout << soar_settings << endl;
+        if(argc == 7){
+       		rat_prob_file = string(argv[6]);
+        }
 
-
-		if(database.substr(database.length() - 3, 3) == ".db"){
-			cout << "WARNING: removing the .db from the database name inputed" << endl;
-			database.erase(database.length() - 3, 3);
-		}
-		database_loc = "smem_soar_databases/" + string(argv[3]) + db_loc;
-		database_cp_loc = "smem_soar_databases/" + string(argv[3]) + db_cp_loc;
-
-		if(argc == 7){
-			rat_prob_file = string(argv[6]);
-		}
+        cout << "MODE: c" << endl;
 	}
-   
-	if (mode == 'c'){
-        num_attempt = 1;
-        soar_source_loc = c_soar_source_loc;
-    }
 
-    if(mode == 'f') cout << "MODE: f ATTEMPTS: " << to_string(num_attempt) << endl;
-    if(mode == 'c') cout << "MODE: c" << endl;
+
+	if(database.substr(database.length() - 3, 3) == ".db"){
+		cout << "WARNING: removing the .db from the database name inputed" << endl;
+		database.erase(database.length() - 3, 3);
+	}
+	database_loc = "smem_soar_databases/" + database + db_loc;
+	database_cp_loc = "smem_soar_databases/" + database + db_cp_loc;
+
+	if(!is_file_exist(database_loc.c_str())){
+		cout << "ERROR: couldn't find database at " + database_loc << endl;;
+		exit(1);
+	}
+
 
     //get database name without path
     size_t found = database.find_last_of("/\\");
@@ -118,6 +161,7 @@ int main(int argc, char** argv){
 
 		removeWhitespace(word3);
 		
+		word_tri.push_back(to_string(rat_size));
 		word_tri.push_back(word1);
 		word_tri.push_back(word2);
 		word_tri.push_back(word3);
@@ -125,6 +169,15 @@ int main(int argc, char** argv){
 
 		rat_word_data.push_back(word_tri);
 	}
+
+	if(rand){
+		 unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+
+  		shuffle (rat_word_data.begin(), rat_word_data.end(), std::default_random_engine(seed));
+	}
+
+	cout << rat_size << endl;
+	cout << rat_prob_file <<endl;
 
     //-------------------------------------------
 	// Create an instance of the Soar kernel in our process
@@ -138,7 +191,7 @@ int main(int argc, char** argv){
         return -1;
     }
 
-    for (int j= 1; j < num_attempt + 1; j++){
+    for (int j= num_attempt_start; j < num_attempt_end + 1; j++){
 	    Agent* pAgent = pKernel->CreateAgent(("rat_test" + to_string(j)).c_str());
 	    
 	    cout << "Initalized Agent" << endl;
@@ -163,7 +216,7 @@ int main(int argc, char** argv){
 	    Identifier* max_assoc;
 	    if (mode == 'f') max_assoc = pAgent->CreateIdWME(pInputLink, "max-attempts");
 	    if (mode == 'c') max_assoc = pAgent->CreateIdWME(pInputLink, "max_assoc");;
-	    IntElement* max_num = pAgent->CreateIntWME(max_assoc, "num", num_attempt);
+	    IntElement* max_num = pAgent->CreateIntWME(max_assoc, "num", j);
 
 	    Identifier* pID_board = pAgent->CreateIdWME(pInputLink, "board");
 	    Identifier* pID_card1 = pAgent->CreateIdWME(pID_board, "card");
@@ -179,27 +232,28 @@ int main(int argc, char** argv){
 		
 		if (mode == 'f') {
 			datFile.open(output_path + "/rat_out_freeRecall_" + to_string(j) + "_" + database_name + ".csv");
-			datFile << "word1,word2,word3,solution,result,attempts,connections,correct" << endl;
+			datFile << "id,word1,word2,word3,solution,result,attempts,connections,correct" << endl;
 		}
 		if (mode == 'c') {
 			datFile.open(output_path + "/rat_out_cued_" + database_name + ".csv");
-			datFile << "word1,word2,word3,solution,result,connections,correct" << endl;
+			datFile << "id,word1,word2,word3,solution,result,connections,correct" << endl;
 
 		}
 
 		//loop through RAT problems  
 		for (int i = 0; i < rat_word_data.size(); i++) {
 
-			assert(rat_word_data[i].size() == 4);
+			assert(rat_word_data[i].size() == 5);
 
-			word1 = rat_word_data[i][0];
-			word2 = rat_word_data[i][1];
-			word3 = rat_word_data[i][2];
-			solution = rat_word_data[i][3];
+			string id = rat_word_data[i][0];
+			word1 = rat_word_data[i][1];
+			word2 = rat_word_data[i][2];
+			word3 = rat_word_data[i][3];
+			solution = rat_word_data[i][4];
 
-            datFile << word1 << "," << word2 << "," << word3 << "," << solution << ",";
+            datFile << id << "," << word1 << "," << word2 << "," << word3 << "," << solution << ",";
 
-			cout << word1 << " " << word2 << " " << word3 << endl;
+			cout << id << " " << word1 << " " << word2 << " " << word3 << endl;
 
 			pAgent->Update(pID_word1, word1.c_str());
 			pAgent->Update(pID_word2, word2.c_str());
@@ -215,13 +269,14 @@ int main(int argc, char** argv){
 			do {
                 step++;
                 pAgent->RunSelf(1);
-               
-                //cout << pKernel->ExecuteCommandLine("print <s>",pAgent->GetAgentName()) << endl;
+                if(step == 1){
+                	//cout << pKernel->ExecuteCommandLine("print <s>",pAgent->GetAgentName()) << endl;
+				}
                 
             } while (!pAgent->Commands() && step < 400);
 
 			if (step == 400) {
-
+				cout << pKernel->ExecuteCommandLine("print s1 -d 5",pAgent->GetAgentName()) << endl;
 				cout << "NA" << endl;
 		
 				switch (mode) {
@@ -235,6 +290,9 @@ int main(int argc, char** argv){
 				}
 			}
 			else {
+				//cout << pKernel->ExecuteCommandLine("print <s> -d 3",pAgent->GetAgentName()) << endl;
+
+
 				Identifier* pCommand = pAgent->GetCommand(0);
 
 				string result = pCommand->GetParameterValue("word");
@@ -268,8 +326,6 @@ int main(int argc, char** argv){
     				}
                 }
 			}
-
-			pAgent->ExecuteCommandLine("init");
 		}//through 144
 	}//through attempts
    
