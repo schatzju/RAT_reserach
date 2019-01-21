@@ -3,3 +3,8 @@
 *.soar
 *.txt
 *.soar~
+*.db
+*.zip
+*DerivedData/
+*smem_xcode.xcodeproj/
+*smem_script.xcodeproj/

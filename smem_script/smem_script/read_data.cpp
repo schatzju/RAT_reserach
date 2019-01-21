@@ -6,7 +6,10 @@
 //  Copyright © 2018 Jule Schatz. All rights reserved.
 //
 
+#include <set>
 #include "read_data.h"
+#include "correction.h"
+
 
 //string const FILE_NAME = "assoc_17_08_22_18.csv";
 
@@ -56,9 +59,13 @@ void read_COCA_TG_data(unordered_set<string> &dictionary, unordered_map< pair<st
 
 void read_data(unordered_set<string> &dictionary, unordered_map< pair<string, string> , int, pairHasher> &word_word_weight, unordered_map<string, int> &unigrams, string file_in, bool dict_on){
     
+    cout << "reading in " << file_in << endl;
+
     //read in raw data
     ifstream file;
     file.open(file_in);
+    
+    set< pair<int, pair<string, string> >, int_pair_compare> flagged_word_word_weight;
     
     //removing column titles at top of csv file
     string column_title = "";
@@ -147,6 +154,5 @@ void read_hbc_data_subset(unordered_set<string> &dictionary, unordered_map< pair
         }
         count++;
     }
-        
 }
 */

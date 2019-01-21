@@ -66,7 +66,7 @@ void double_db(unordered_map< pair<string, string> , int, pairHasher> &word_word
     
     out << "}";
     
-    cout << name << endl;
+    cout << endl << name << endl;
     cout << "Association count: " << assoc_count << endl;
    
     ofstream datFile;

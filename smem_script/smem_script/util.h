@@ -27,6 +27,17 @@ struct pairHasher {
     }
 };
 
+
+struct int_pair_compare{
+    bool operator()(pair<int, pair<string, string>> a, pair<int, pair<string, string>> b){
+        int first_int = a.first;
+        int sec_int = b.first;
+        
+        if(first_int > sec_int) return true;
+        else return false;
+    }
+};
+
 struct pair_compare{
     bool operator()(pair<string, int> a, pair<string, int> b){
         if(a.second > b.second){

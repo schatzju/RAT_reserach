@@ -21,6 +21,7 @@
 #include "collocation_compound.h"
 #include "RAT_solution_check.h"
 #include "read_data.h"
+#include "correction.hpp"
 
 using namespace std;
 
@@ -42,6 +43,7 @@ void hbc(unordered_set<string> &dictionary, bool single_, bool double_, bool dic
     std::tm* now = std::localtime(&t);
     file_out = file_out + "_" + to_string(now->tm_mon+1) + "_" + to_string(now->tm_mday) + "_" + to_string(now->tm_year +1900);
    
+
     //---------------------single-----------------------//
     if(single_){
         cout << "running HBC single" << endl;
@@ -58,6 +60,7 @@ void hbc(unordered_set<string> &dictionary, bool single_, bool double_, bool dic
         else{
             file_out = file_out + "_hbc_single_trash";
         }
+        
 
         //writes .soar outputfile
         single_db(word_word_weight_hbc_single, unigrams_hbc, hbc_single_fan, file_out);
