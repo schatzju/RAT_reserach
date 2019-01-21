@@ -6,4 +6,4 @@
 *.db
 *.zip
 *DerivedData/
-smem_script/smem_hbc_cleaning.xcodeproj/*
+*smem_hbc_cleaning.xcodeproj/*
