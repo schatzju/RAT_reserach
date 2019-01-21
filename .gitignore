@@ -6,3 +6,6 @@
 *hbc*.soar
 *DerivedData/
 smem_script/smem_hbc_cleaning.xcodeproj/*
+smem_script/collocates_60k_b357.txt
+smem_script/ngrams.txt
+smem_script/wordnetWords.txt
