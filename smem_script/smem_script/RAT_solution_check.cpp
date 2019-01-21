@@ -22,7 +22,7 @@ bool in_map(string word1, string solution, unordered_map< pair<string, string> ,
 void rat_check(unordered_map< pair<string, string> , int, pairHasher> & word_word_weight, string out_file_name){
     
     ofstream outFile;
-    outFile.open(out_file_name);
+    outFile.open("solution_files/" + out_file_name);
     
     ifstream inFile;
     inFile.open("raw_144.txt");

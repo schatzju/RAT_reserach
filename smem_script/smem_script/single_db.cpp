@@ -15,9 +15,6 @@ using namespace std;
 
 static void write_unigrams(unordered_map<string, int> &unigrams, stringstream &out){
     for(auto unigram: unigrams){
-        if(unigram.first == "high"){
-            cout << "high" <<endl;
-        }
         out << "\t(<" << unigram.second << "> ^word " << unigram.first << ") \n";
     }
     cout << "Word Count: " << unigrams.size() << endl;
@@ -61,6 +58,6 @@ void single_db(unordered_map< pair<string, string> , int, pairHasher> &word_word
     cout << "writing " + name << endl;
     
     ofstream datFile;
-    datFile.open(name + ".soar");
+    datFile.open("../smem_soar_databases/" + name + ".soar");
     datFile.write(out.str().c_str(), out.str().length());
 }

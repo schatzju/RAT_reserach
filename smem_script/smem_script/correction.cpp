@@ -6,7 +6,7 @@
 //  Copyright © 2018 Jule Schatz. All rights reserved.
 //
 
-#include "correction.hpp"
+#include "correction.h"
 #include <set>
 
 #include <iostream>

@@ -21,7 +21,7 @@
 #include "collocation_compound.h"
 #include "RAT_solution_check.h"
 #include "read_data.h"
-#include "correction.hpp"
+#include "correction.h"
 
 using namespace std;
 
@@ -131,7 +131,7 @@ int main(int argc, char* argv[]){
 
     unordered_set<string> dictionary;
 
-    //true words.txt true false assoc_17_08_22_18.csv
+    //true words.txt true false assoc_17_08_22_18.csv out_test.soar
     if(argc != 7 && argc != 6){
         cout << "Error with input! please input: dict, dictionary file (if dict true), single, double, file in name, file out name" << endl;
         exit(1);
