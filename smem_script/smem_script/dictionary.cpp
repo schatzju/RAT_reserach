@@ -5,6 +5,7 @@ using namespace std;
 
 void create_dictionary(unordered_set<string> &dictionary, string file_in)
 {
+    int count = 0;
     //open dictionary file (lists all words in the english language)
     ifstream fin;
     fin.open(file_in);
@@ -16,6 +17,7 @@ void create_dictionary(unordered_set<string> &dictionary, string file_in)
     //fills up the set with words
     string word;
     while (fin >> word) {
+        count++;
         removeWhitespace(word);
         //if words are made of only letters
         if(std::regex_match(word, std::regex("^[A-Za-z]+$"))){
@@ -23,4 +25,5 @@ void create_dictionary(unordered_set<string> &dictionary, string file_in)
             dictionary.insert(word);
         }
     }
+    cout << file_in << " dictionary word count: " << count << endl;
 }

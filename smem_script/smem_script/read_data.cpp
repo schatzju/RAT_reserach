@@ -13,14 +13,14 @@
 
 //string const FILE_NAME = "assoc_17_08_22_18.csv";
 
-void read_hbc_data(unordered_set<string> &dictionary, unordered_map< pair<string, string> , int, pairHasher> &word_word_weight, unordered_map<string, int> &unigrams, string file_name, bool dict_on){
+void read_hbc_data(unordered_set<string> &dictionary, unordered_map< pair<string, string> , int, pairHasher> &word_word_weight, unordered_map<string, int> &unigrams, string file_name, bool dict_on, unordered_map<string, string> &word_lemma){
     
-    read_data(dictionary, word_word_weight, unigrams, file_name, dict_on);
+    read_data(dictionary, word_word_weight, unigrams, file_name, dict_on, word_lemma);
 }
 
-void read_COCA_TG_data(unordered_set<string> &dictionary, unordered_map< pair<string, string> , int, pairHasher> &word_word_weight, unordered_map<string, int> &unigrams, int weight_compound){
+void read_COCA_TG_data(unordered_set<string> &dictionary, unordered_map< pair<string, string> , int, pairHasher> &word_word_weight, unordered_map<string, int> &unigrams, int weight_compound, unordered_map<string, string> &word_lemma){
     
-    read_data(dictionary, word_word_weight, unigrams, "ngrams.txt", false);
+    read_data(dictionary, word_word_weight, unigrams, "ngrams.txt", false, word_lemma);
     
     int compound_int = 0;
     //add compound word associations
@@ -57,7 +57,7 @@ void read_COCA_TG_data(unordered_set<string> &dictionary, unordered_map< pair<st
     }
 }
 
-void read_data(unordered_set<string> &dictionary, unordered_map< pair<string, string> , int, pairHasher> &word_word_weight, unordered_map<string, int> &unigrams, string file_in, bool dict_on){
+void read_data(unordered_set<string> &dictionary, unordered_map< pair<string, string> , int, pairHasher> &word_word_weight, unordered_map<string, int> &unigrams, string file_in, bool dict_on, unordered_map<string, string> &word_lemma){
     
     cout << "reading in " << file_in << endl;
 
@@ -65,6 +65,11 @@ void read_data(unordered_set<string> &dictionary, unordered_map< pair<string, st
     ifstream file;
     file.open(file_in);
     
+    if(!file.is_open()) {
+        cout << "Error opening " + file_in + "!" << endl;
+        exit(1);
+    }
+
     set< pair<int, pair<string, string> >, int_pair_compare> flagged_word_word_weight;
     
     //removing column titles at top of csv file
@@ -78,10 +83,14 @@ void read_data(unordered_set<string> &dictionary, unordered_map< pair<string, st
     string weight;
     
     //unique ID for each node to be added into soar's SMEM
-    int count = 0;
+    int count = 1;
+    
+    //int lemma_replace = 0;
+    int check = 0;
     
     //number of associations the dataset has
     int count_assoc = 0;
+    int countWords = 0;
     
     while(getline(file, word1, ',')){
         getline(file, word2, ',');
@@ -95,6 +104,25 @@ void read_data(unordered_set<string> &dictionary, unordered_map< pair<string, st
         //if words are made of only letters (no spaces, characters, or numbers)
         if(std::regex_match(word1, std::regex("^[A-Za-z]+$")) && std::regex_match(word2, std::regex("^[A-Za-z]+$"))){
             
+            /*replace word1 with lemma if exists
+            if(word_lemma.find(word1) != word_lemma.end()){
+                string temp = word_lemma[word1];
+                if(word1 != temp){
+                    lemma_replace++;
+                }
+                word1 = temp;
+            }
+            
+            //replace word2 with lemma if exists
+            if(word_lemma.find(word2) != word_lemma.end()){
+                string temp = word_lemma[word2];
+                if(word2 != temp){
+                    lemma_replace++;
+                }
+                word2 = temp;
+
+            }
+            */
             //if both words are in the dictionary
             if(dict_on == false || (dictionary.find(word1) != dictionary.end() && dictionary.find(word2) != dictionary.end())){
                 
@@ -112,17 +140,26 @@ void read_data(unordered_set<string> &dictionary, unordered_map< pair<string, st
                 }
                 
                 //stores association between word1, word2 with weight
-                if(word_word_weight.find(make_pair(word1, word2)) == word_word_weight.end()){
-                    word_word_weight[make_pair(word1, word2)] = stoi(weight);
+                pair<string, string> w1_w2 = make_pair(word1, word2);
+                if(word_word_weight.find(w1_w2) == word_word_weight.end()){
+                    word_word_weight[w1_w2] = stoi(weight);
                 }
                 else{
-                    cout << "multiple instances of word1 word 2, " + word1 + " " + word2;
+                    word_word_weight[w1_w2] = stoi(weight) + word_word_weight[w1_w2];
+                    check++;
                 }
                 count_assoc++;
 
             }//dict if
+            else{
+                countWords++;
+                flagged_word_word_weight.insert(pair<int, pair<string, string>>(stoi(weight), pair<string, string>(word1, word2)));
+            }
         }//letters if
     }//file loop
+    cout << "removed words: " << countWords << endl;
+    //correcting(flagged_word_word_weight);
+    
 }
 
 /*

@@ -32,7 +32,7 @@ void correcting(set< pair<int, pair<string, string> >, int_pair_compare>&word_wo
     std::string s = date::format("%F %T", std::chrono::system_clock::now());
 
     ofstream toCorrect;
-    toCorrect.open("toCorrect.txt",  std::ios_base::app);
+    toCorrect.open("AllRemoved.txt",  std::ios_base::app);
     
     ofstream toCorrectWord;
     toCorrectWord.open("toCorrectWords.txt",  std::ios_base::app);
@@ -43,13 +43,19 @@ void correcting(set< pair<int, pair<string, string> >, int_pair_compare>&word_wo
     ofstream toRemove;
     toRemove.open("toRemove.txt", std::ios_base::app);
     
+    bool end = false;
+    
     for(auto www_iter : word_word_weight){
-        
         string command = "";
         
         cout << www_iter.second.first << " " << www_iter.second.second << " " << www_iter.first << endl;
         
+        toCorrect << www_iter.second.first << " " << www_iter.second.second << " " << www_iter.first << endl;
+        
         while(cin >> command){
+            if(end){
+                break;
+            }
             if(command == "n"){
                 break;
             }
@@ -70,6 +76,10 @@ void correcting(set< pair<int, pair<string, string> >, int_pair_compare>&word_wo
             }
             else if(command == "r2"){
                 toRemove << www_iter.second.second << endl;
+            }
+            else if(command =="exit"){
+                end = true;
+                break;
             }
             else if(command.size() > 0){
                 cout << "Error!" << endl;

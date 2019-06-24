@@ -22,8 +22,9 @@
 
 using namespace std;
 
+void write_unigrams(unordered_map<string, int> &unigrams, stringstream &out);
+
 //This function writes the data into a file for soar to read in for loading its semantic memory. It also
-//calls RAT_solution_check() to produce a possible solution csv file.
-void single_db(unordered_map< pair<string, string> , int, pairHasher> &word_word_weight, unordered_map<string, int> &unigrams, unordered_map< string, int> &fan, string name);
+void single_db(unordered_map< pair<string, string> , int, pairHasher> &word_word_weight, unordered_map<string, int> &unigrams, unordered_map< string, int> &fan,unordered_map<string, int> &freq_map, string name, int frequencyTime, double frequencyScale = 1.0);
 
 #endif /* single_db_h */
