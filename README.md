@@ -19,3 +19,17 @@ ex) $ ./exeRAT f F 1 20 finalNormalizedVersions/_9_20_2019_hbc_single_trash_norm
 
 **Cued**: $ ./exeRAT c \<T or F for random order of questions\> database output smemParameters ratProblemsTextFile <br/> 
 ex)./exeRAT c F final_versions/COCA-TG_8_30_2019 output/cocaCued_10_08_2019 "smem --set spreading-use-only both" raw_144.txt <br/>
+
+
+
+### Description of Important Files/Directories
+
+**rat_script.cpp** This C++ SML script takes in a Soar database backup (.db file) and runs either the Cued or FreeRecall model on inputted RAT questions. (see above for how to run). It prints out the RAT question the agent is working on, what it guessed as the answer, and how many of the cue words are connected to the solution word. 
+
+**raw_144.txt** A text file of the 144 RAT questions published by Bowden and Jung-Beeman 2003.
+
+**models** A directory of the Soar code for the Free Recall and the Cued model.
+
+**smem_script** A diretory with the code to create the .soar database files from word association data sets.
+ 
+Bowden, E. M., & Jung-Beeman, M. (2003). Normative datafor 144 compound remote associate problems. BehaviorResearch Methods, Instruments, & Computers,35(4), 634–639
