@@ -22,7 +22,8 @@ ex)./exeRAT c F final_versions/COCA-TG_8_30_2019 output/cocaCued_10_08_2019 "sme
 
 
 
-### Description of Important Files/Directories
+## Files/Directories
+
 
 **rat_script.cpp** This C++ SML script takes in a Soar database backup (.db file) and runs either the Cued or FreeRecall model on inputted RAT questions. (see above for how to run). It prints out the RAT question the agent is working on, what it guessed as the answer, and how many of the cue words are connected to the solution word. 
 
