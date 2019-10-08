@@ -14,15 +14,17 @@ Link to paper: soar.eecs.umich.edu/pubs/schatz_iccm18.pdf
 
 
 **FreeRecall**: $ ./exeRAT f \<T or F for random order of questions\> start_attempts end_attempts database output smemParameters  ratProblemsTextFile <br/>
-ex) $ ./exeRAT f F 1 20 finalNormalizedVersions/_9_20_2019_hbc_single_trash_normalized output/FR_hbc_single_10_08_2019 "smem --set spreading-use-only both" raw_144.txt <br/> 
+ex) $ ./exeRAT f F 1 20 subRELEASE_10_8_2019_hbc_single_trash output/FR_hbc_single_sub_10_08_2019 "smem --set spreading-use-only both" raw_144.txt <br/> 
 
 **Cued**: $ ./exeRAT c \<T or F for random order of questions\> database output smemParameters ratProblemsTextFile <br/> 
-ex)./exeRAT c F final_versions/COCA-TG_8_30_2019 output/cocaCued_10_08_2019 "smem --set spreading-use-only both" raw_144.txt <br/>
-
+ex)./exeRAT c F subRELEASE_10_8_2019_hbc_single_trash output/FR_hbc_single_sub_10_08_2019 "smem --set spreading-use-only both" raw_144.txt <br/> 
 
 
 ## Files/Directories
 
+**output** A directory where the output from the rat_script is saved
+
+**smem_soar_databases** A directory where .soar and .db files are stored and saved from smem scripts
 
 **rat_script.cpp** This C++ SML script takes in a Soar database backup (.db file) and runs either the Cued or FreeRecall model on inputted RAT questions. (see above for how to run). It prints out the RAT question the agent is working on, what it guessed as the answer, and how many of the cue words are connected to the solution word. 
 
