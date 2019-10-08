@@ -1,4 +1,4 @@
-## Files
+## Files/Directories
 
 **solution_files** where the smem_script saves the database analysis outcomes <\br>
 
