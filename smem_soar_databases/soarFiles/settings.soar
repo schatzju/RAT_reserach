@@ -1,0 +1,38 @@
+wma --set activation on
+
+smem --set activation-mode base-level
+#smem --set base-update-policy incremental
+#smem --set base-update-policy naive
+smem --set base-update-policy incremental
+smem --set base-incremental-threshes 1
+smem --set base-incremental-threshes 2
+smem --set base-incremental-threshes 4
+smem --set base-incremental-threshes 8
+smem --set base-incremental-threshes 20
+smem --set base-incremental-threshes 40
+smem --set base-incremental-threshes 80
+smem --set base-incremental-threshes 160
+smem --set base-incremental-threshes 320
+
+smem --set spreading-calculation-method hebbian
+#smem --set spreading-use-only association
+
+
+wma --set activation on 
+smem --set activation-mode base-level
+smem --set activate-on-query on
+smem --set spreading-depth-limit 1
+smem --set spreading-loop-avoidance on 
+smem --set spreading-wma-source off 
+smem --set spreading-limit 9999999
+smem --set base-inhibition on
+
+#smem --set spreading-baseline 0.3
+
+smem --set spreading on
+
+srand
+
+smem --set learning on
+
+chunk never
