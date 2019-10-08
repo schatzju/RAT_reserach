@@ -8,7 +8,7 @@ Link to paper: soar.eecs.umich.edu/pubs/schatz_iccm18.pdf
 ### To Run the RAT script
 1. Install and setup Soar and SML, details found at soar.eecs.umich.edu
 2. Compile rat_script.cpp
-  on my mac: g++ -L < path>/Soar-9.6/bin -I < path>/Soar-9.6/include rat_script.cpp -lSoar  -std=c++11 -o exeRAT
+  on my mac: g++ -L < path>/Soar-9.6/bin -I < path>/Soar-9.6/include rat_script.cpp -lSoar --std=c++11 -o exeRAT
 3. For mac run: export DYLD_LIBRARY_PATH=< path>/Soar/out/
 4. Run executable (see below) <br/>
 
