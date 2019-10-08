@@ -32,5 +32,7 @@ ex)./exeRAT c F final_versions/COCA-TG_8_30_2019 output/cocaCued_10_08_2019 "sme
 **models** A directory of the Soar code for the Free Recall and the Cued model.
 
 **smem_script** A diretory with the code to create the .soar database files from word association data sets.
+
+**RAT_sub_RELEASE.txt** The four RAT questions the sample data file in smem_script can answer
  
 Bowden, E. M., & Jung-Beeman, M. (2003). Normative datafor 144 compound remote associate problems. BehaviorResearch Methods, Instruments, & Computers,35(4), 634–639
