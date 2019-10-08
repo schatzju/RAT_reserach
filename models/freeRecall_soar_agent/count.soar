@@ -30,7 +30,6 @@ sp {elaborate*phase_connections
 -->
 (<s> ^operator <o> + > =)
 (<o> ^name add_connection ^con <con> ^clue <clue> ^word <word> ^lti <lti>)
-(write |proposing connection from RAT cue | <word> | to | <word_p> |. |)
 }
 
  sp {propose*operator*add_connection_otherway
@@ -51,7 +50,6 @@ sp {elaborate*phase_connections
 -->
 (<s> ^operator <o> + > =)
 (<o> ^name add_connection ^con <con> ^clue <clue> ^word <word> ^lti <lti>)
-(write |proposing connection from guess | <word_p> | to | <word> |. |)
 }
 
 sp {apply*operator*add_connection_first
@@ -74,7 +72,6 @@ sp {apply*operator*add_connection_first
 (<con> ^word <word>)
 (<clue> ^flag connects ^num_assoc 1)
 (<s> 	^prohibit <lti_clue1>)
-(write |Connected guess | <word_p> | to RAT prompt | <word> |.|)
 }
 
 sp {apply*operator*add_connection
@@ -97,7 +94,6 @@ sp {apply*operator*add_connection
 (<con> ^word <word>)
 (<clue> ^flag connects ^num_assoc ( + <some> 1) ^num_assoc <some> -)
 (<s> 	^prohibit <lti_clue1>)
-(write |Connected guess | <word_p> | to RAT prompt | <word> |.|)
 }
  
 

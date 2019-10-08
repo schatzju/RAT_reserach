@@ -24,8 +24,6 @@
 #include <unordered_map>
 #include <regex>
 #include <unordered_set>
-#include "single_db.h"
-#include "double_db.h"
 #include "dictionary.h"
 #include "collocation_compound.h"
 #include "RAT_solution_check.h"

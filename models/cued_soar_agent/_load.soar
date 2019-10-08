@@ -8,10 +8,12 @@ wma --set activation on
 
 smem --set activation-mode base-level
 #leave until slow
-smem --set base-update-policy stable
-smem --set activate-on-query off
+smem --set base-update-policy naive
+smem --set activate-on-query on
 smem --set spreading-depth-limit 1
 smem --set spreading-loop-avoidance on
+smem --set base-inhibition on
+
 
 smem --set spreading-limit 1000 #702
 
@@ -24,8 +26,8 @@ chunk never
 
 
 #For debugging 
-#smem --set path thresh2_1_7_2019_hbc_single_cp.db
-#smem --set database file
+# smem --set path COCA-TG_7_9_2019_cp.db
+# smem --set database file
 
 
 

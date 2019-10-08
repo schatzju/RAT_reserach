@@ -38,12 +38,14 @@ sp {apply*operator*result
 	^clue <clue>)
 (<clue> ^element <elem>
         ^connections <con>
-		 ^word <word>)
+		 ^word <word>
+		 ^activation <act>)
 -->
 (<out> ^result <x>)
 (<x> ^word <word>
 	^num (size <con>)
-	^attempts <attm>)
+	^attempts <attm>
+	^activation <act>)
 (write <word> | attempts: | <attm> | connections: |(size <con>) | solution: |)
 (<s> ^done <x>)
 }

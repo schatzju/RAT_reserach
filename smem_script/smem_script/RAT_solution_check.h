@@ -26,6 +26,6 @@ struct pairHasher;
 
 //creates a csv file with the exact rat items word_word_weight has the solution to
 //checks that word--weight-->solution exists for all three words
-void rat_check(unordered_map< pair<string, string> , int, pairHasher> & word_word_weight, string out_file_name);
+void rat_check(unordered_map< pair<string, string> , int, pairHasher> & word_word_weight, string out_file_name, unordered_map<string, int> &word_fan, unordered_map<string, int> &word_assoc);
 
 #endif /* RAT_solution_check_hpp */

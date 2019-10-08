@@ -93,7 +93,6 @@ int main(int argc, char** argv){
         if(argc >= 8){
        		soar_settings = argv[7];
         }
-
         if(argc == 9){
        		rat_prob_file = string(argv[8]);
         }
@@ -108,12 +107,14 @@ int main(int argc, char** argv){
 		num_attempt_end = 1;
 
 		database = string(argv[3]);
+
         output_path = string(argv[4]);
 
         if(argc >= 6){
        		soar_settings = argv[5];
         }
 
+        cout << argc << endl;
         if(argc == 7){
        		rat_prob_file = string(argv[6]);
         }
@@ -192,6 +193,7 @@ int main(int argc, char** argv){
     }
 
     for (int j= num_attempt_start; j < num_attempt_end + 1; j++){
+    	cout << "ATTEMPTS: " << j << endl;
 	    Agent* pAgent = pKernel->CreateAgent(("rat_test" + to_string(j)).c_str());
 	    
 	    cout << "Initalized Agent" << endl;
@@ -207,7 +209,9 @@ int main(int argc, char** argv){
 	    pAgent->LoadProductions(soar_source_loc.c_str());
 	    pAgent->ExecuteCommandLine(("smem --set path " + database_cp_loc).c_str());
 	    pAgent->ExecuteCommandLine("smem --set database file");
-	    pAgent->ExecuteCommandLine(soar_settings);
+	    if(!strcmp(soar_settings,"NA")){
+	    	pAgent->ExecuteCommandLine(soar_settings);
+		}
 	    pAgent->ExecuteCommandLine(("srand 5 " + database_cp_loc).c_str());
 
 	    //put three words on the input link
@@ -269,14 +273,35 @@ int main(int argc, char** argv){
 			do {
                 step++;
                 pAgent->RunSelf(1);
+                if(step == 1 && i == 0){
+                	cout << pKernel->ExecuteCommandLine("smem ?",pAgent->GetAgentName()) << endl;
+                	//cout << "STEPS: 2" << endl;
+                	//cout << pKernel->ExecuteCommandLine("smem ?",pAgent->GetAgentName()) << endl;
+
+                }
                 if(step == 1){
-                	//cout << pKernel->ExecuteCommandLine("print <s>",pAgent->GetAgentName()) << endl;
+                	//cout << "STEPS: 1" << endl;
+                	//cout << pKernel->ExecuteCommandLine("print <s> -d 3",pAgent->GetAgentName()) << endl;
+                	//cout << pKernel->ExecuteCommandLine("print @695",pAgent->GetAgentName()) << endl;
+                	//cout << pKernel->ExecuteCommandLine("print @451",pAgent->GetAgentName()) << endl;
+                }
+                if(step == 5){
+                	//cout << "STEPS: 5" << endl;
+                	//cout << pKernel->ExecuteCommandLine("print <s> -d 2",pAgent->GetAgentName()) << endl;
+                	                	//cout << "R3" << endl;
+
+                	//cout << pKernel->ExecuteCommandLine("print R3",pAgent->GetAgentName()) << endl;
+                	//cout << pKernel->ExecuteCommandLine("print @695",pAgent->GetAgentName()) << endl;
 				}
                 
             } while (!pAgent->Commands() && step < 400);
 
 			if (step == 400) {
-				cout << pKernel->ExecuteCommandLine("print s1 -d 5",pAgent->GetAgentName()) << endl;
+				cout << pKernel->ExecuteCommandLine("print s1 -d 1",pAgent->GetAgentName()) << endl;
+				cout << pKernel->ExecuteCommandLine("print C16 -d 3",pAgent->GetAgentName()) << endl;
+				cout << pKernel->ExecuteCommandLine("print s2 -d 2",pAgent->GetAgentName()) << endl;
+
+				
 				cout << "NA" << endl;
 		
 				switch (mode) {
@@ -288,17 +313,39 @@ int main(int argc, char** argv){
 					cout << "NA" << endl;
 					break;
 				}
+				//reset agent
+			    pKernel->ExecuteCommandLine("init",pAgent->GetAgentName());
+			 
+			    // //put three words on the input link
+			    // Identifier* pInputLink = pAgent->GetInputLink();
+			        
+			    // Identifier* max_assoc;
+			    // if (mode == 'f') max_assoc = pAgent->CreateIdWME(pInputLink, "max-attempts");
+			    // if (mode == 'c') max_assoc = pAgent->CreateIdWME(pInputLink, "max_assoc");;
+			    // IntElement* max_num = pAgent->CreateIntWME(max_assoc, "num", j);
+
+			    // Identifier* pID_board = pAgent->CreateIdWME(pInputLink, "board");
+			    // Identifier* pID_card1 = pAgent->CreateIdWME(pID_board, "card");
+			    // Identifier* pID_card2 = pAgent->CreateIdWME(pID_board, "card");
+			    // Identifier* pID_card3 = pAgent->CreateIdWME(pID_board, "card");
+
+			    // StringElement* pID_word1 = pAgent->CreateStringWME(pID_card1, "word", " ");
+			    // StringElement* pID_word2 = pAgent->CreateStringWME(pID_card2, "word", " ");
+			    // StringElement* pID_word3 = pAgent->CreateStringWME(pID_card3, "word", " ");
 			}
 			else {
 				//cout << pKernel->ExecuteCommandLine("print <s> -d 3",pAgent->GetAgentName()) << endl;
-
-
+				//cout << pKernel->ExecuteCommandLine("smem --history @451",pAgent->GetAgentName()) << endl;
+				//cout << pKernel->ExecuteCommandLine("smem --history @695",pAgent->GetAgentName()) << endl;
 				Identifier* pCommand = pAgent->GetCommand(0);
 
 				string result = pCommand->GetParameterValue("word");
 				string num = pCommand->GetParameterValue("num");
+				//string activation = pCommand->GetParameterValue("activation");
 
-                cout << result << endl;
+                //cout <<  result << ", " << num << ", " << activation << endl;
+                cout <<  result << ", " << num << endl;
+
 
                 removeWhitespace(result);
 

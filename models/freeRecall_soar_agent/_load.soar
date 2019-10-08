@@ -1,5 +1,8 @@
 wma --set activation on
 
+#REMOVE LATER
+#smem --set spreading-use-only neither
+
 smem --set activation-mode base-level
 smem --set base-update-policy incremental
 smem --set activate-on-query on
@@ -14,6 +17,11 @@ smem --set spreading-loop-avoidance on
 smem --set spreading-wma-source off
 smem --set base-inhibition on
 smem --set spreading-limit 9999999
+
+
+smem --set spreading-calculation-method hebbian
+#smem --set spreading-use-only association
+
 srand
 
 smem --set spreading on
@@ -21,8 +29,11 @@ smem --set learning on
 
 chunk never
 
-#smem --set path /Users/schatzju/Dropbox/soar/codeNames/RAT/rat_script/smem_soar_databases/hbc_single_trash_cp.db
+#smem --set path /Users/schatzju/Desktop/Soar/out/_6_24_2019_hbc_single_trash_cp.db
 #smem --set database file
+
+#REMOVE LATER
+#source /Users/schatzju/Dropbox/soar/codeNames/RAT/rat_script/smem_soar_databases/soarFiles/finalVersions/_6_24_2019_hbc_single_trash.soar
 
 source initialize.soar
 source load_cards_wm.soar

@@ -24,11 +24,11 @@ sp {apply*initialize-codeNames-clueGiver
 (<max> ^num 15)
 
 (<board> ^card <card1>)
-(<card1> ^word rocking)
+(<card1> ^word shadow)
 (<board> ^card <card3>)
-(<card3> ^word wheel)
+(<card3> ^word chart)
 (<board> ^card <card4>)
- (<card4> ^word high)
+ (<card4> ^word drop)
 # (<board> ^card <card5>)
 # (<card5> ^word sub)
 # (<board> ^card <card6>)
@@ -39,9 +39,9 @@ sp {apply*initialize-codeNames-clueGiver
 # (<card8> ^word dance)
 # (<board> ^card <card9>)
 # (<card9> ^word bug)
-#(<board> ^card <card10>)
-#(<card10> ^word space
-#			^neg <neg>)
+# (<board> ^card <card10>)
+# (<card10> ^word space
+# 			^neg <neg>)
 
 (write |Initialized|)
 }

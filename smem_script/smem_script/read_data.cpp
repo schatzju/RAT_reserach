@@ -13,18 +13,34 @@
 
 //string const FILE_NAME = "assoc_17_08_22_18.csv";
 
-void read_hbc_data(unordered_set<string> &dictionary, unordered_map< pair<string, string> , int, pairHasher> &word_word_weight, unordered_map<string, int> &unigrams, string file_name, bool dict_on, unordered_map<string, string> &word_lemma){
+void read_hbc_data(unordered_set<string> &dictionary, unordered_map< pair<string, string> , int, pairHasher> &word_word_weight, unordered_map<string, int> &unigrams, string file_name, bool dict_on, unordered_map<string, int> &word_fan, unordered_map<string, int> &word_assoc, unordered_map<string, set<string>> &word_to_outgoing, string type){
     
-    read_data(dictionary, word_word_weight, unigrams, file_name, dict_on, word_lemma);
+    read_data(dictionary, word_word_weight, unigrams, file_name, dict_on, word_fan, word_assoc, word_to_outgoing, type);
 }
 
-void read_COCA_TG_data(unordered_set<string> &dictionary, unordered_map< pair<string, string> , int, pairHasher> &word_word_weight, unordered_map<string, int> &unigrams, int weight_compound, unordered_map<string, string> &word_lemma){
+void read_COCA_TG_data(unordered_map< pair<string, string> , int, pairHasher> &word_word_weight, unordered_map<string, int> &unigrams, int weight_compound){
     
-    read_data(dictionary, word_word_weight, unigrams, "ngrams.txt", false, word_lemma);
+    unordered_set<string> dictionary;
+    unordered_map<string, int> word_fan;
+    unordered_map<string, int> word_assoc;
+    unordered_map<string, set<string>> word_to_outgoing;
+    
+    read_data(dictionary, word_word_weight, unigrams, "ngrams.txt", false, word_fan, word_assoc, word_to_outgoing, "double");
     
     int compound_int = 0;
+    
+    int count = 0;
+    
+    cout << "compound words" << endl;
+    cout << "unique words: " << unigrams.size() << endl;
     //add compound word associations
     for(auto it: unigrams){
+        
+        if(count%100 == 0){
+            cout << count << endl;
+        }
+        
+        count++;
         string word1 = it.first;
 
         for(auto it2: unigrams){
@@ -55,9 +71,12 @@ void read_COCA_TG_data(unordered_set<string> &dictionary, unordered_map< pair<st
             }
         }
     }
+    cout << "done with compound" << endl;
 }
 
-void read_data(unordered_set<string> &dictionary, unordered_map< pair<string, string> , int, pairHasher> &word_word_weight, unordered_map<string, int> &unigrams, string file_in, bool dict_on, unordered_map<string, string> &word_lemma){
+void read_data(unordered_set<string> &dictionary, unordered_map< pair<string, string> , int, pairHasher> &word_word_weight, unordered_map<string, int> &unigrams, string file_in, bool dict_on,unordered_map<string, int> &word_fan, unordered_map<string, int> &word_assoc, unordered_map<string, set<string>> &word_to_outgoing, string type){
+    
+    
     
     cout << "reading in " << file_in << endl;
 
@@ -81,6 +100,7 @@ void read_data(unordered_set<string> &dictionary, unordered_map< pair<string, st
     string word1;
     string word2;
     string weight;
+
     
     //unique ID for each node to be added into soar's SMEM
     int count = 1;
@@ -93,9 +113,15 @@ void read_data(unordered_set<string> &dictionary, unordered_map< pair<string, st
     int countWords = 0;
     
     while(getline(file, word1, ',')){
+
         getline(file, word2, ',');
         getline(file, weight);
         
+//        //REVERSE CODE (don't use)
+//        string temp = word1;
+//        word1 = word2;
+//        word2 = temp;
+////
         //turns words to all lowercase
         transform(word1.begin(), word1.end(), word1.begin(), ::tolower);
         transform(word2.begin(), word2.end(), word2.begin(), ::tolower);
@@ -131,13 +157,23 @@ void read_data(unordered_set<string> &dictionary, unordered_map< pair<string, st
                 if(unigrams.find(word1) == unigrams.end()){
                     unigrams.emplace(word1, count);
                     count++;
+                    word_fan.emplace(word1, 0);
+                    word_assoc.emplace(word1, 0);
                 }
                 
                 //adds word2 to unigrams if it isn't already there and gives it a unique identifier
                 if(unigrams.find(word2) == unigrams.end()){
                     unigrams.emplace(word2, count);
                     count++;
+                    word_fan.emplace(word2, 0);
+                    word_assoc.emplace(word2, 0);
                 }
+                
+                word_fan[word1] = word_fan[word1] + 1;
+                word_assoc[word1] = word_assoc[word1] + stoi(weight);
+                
+                //if word2 is not mapped to word1 yet
+                word_to_outgoing[word1].insert(word2);
                 
                 //stores association between word1, word2 with weight
                 pair<string, string> w1_w2 = make_pair(word1, word2);
@@ -157,7 +193,6 @@ void read_data(unordered_set<string> &dictionary, unordered_map< pair<string, st
             }
         }//letters if
     }//file loop
-    cout << "removed words: " << countWords << endl;
     //correcting(flagged_word_word_weight);
     
 }

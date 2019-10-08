@@ -21,7 +21,7 @@ sp {apply*initialize-RAT-solver
 	^branch <branch2b>
 	^branch <branch2c>
 	#^branch <branch13>
-#    ^io <iox>
+    ^iox <iox>
 )
 (<branch> ^elements <elements1>
 		^count 3
@@ -38,13 +38,13 @@ sp {apply*initialize-RAT-solver
 		^count 2
 		^number 2
 		^id 2C)
-# (<iox> ^input-link <in>)
-# (<in> ^board <board>)
-# (<board> ^card <card1>)
-# (<card1> ^word fly)
-# (<board> ^card <card2>)
-# (<card2> ^word clip)
-# (<board> ^card <card3>)
-# (<card3> ^word wall)
+(<iox> ^input-link <in>)
+(<in> ^board <board>)
+(<board> ^card <card1>)
+(<card1> ^word night)
+(<board> ^card <card2>)
+(<card2> ^word wrist)
+(<board> ^card <card3>)
+(<card3> ^word stop)
 (write |Initialized|)
 }

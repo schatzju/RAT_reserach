@@ -12,16 +12,19 @@
 
 using namespace std;
 
-/*
+
 int main(){
     
     unordered_set<string> tags_found;
+    
+    unordered_map<string, int> tag_word_count;
     
     vector< pair<string, string> > collocates;
     
     vector< int> freq;
     
-    unordered_set<string> accept_pos( { "fu", "fw", "jj", "nd1", "nn", "nn1", "nn2", "ra", "rex", "rr", "rt", "vb0", "vvg", "vvn", "nnu", "nnu1", "nnu2"} );
+    unordered_set<string> accept_pos( { "fu", "fw", "jj", "nd1", "nn", "nn1", "nn2", "ra", "rex", "rr", "rt", "vb0", "vvg", "vvn"} );
+    //"nnu", "nnu1", "nnu2", "nnt"
     
     ifstream wordFile;
     wordFile.open("w2c.txt");
@@ -30,12 +33,14 @@ int main(){
         cout << "Error opening w2c.txt!" << endl;
         exit(1);
     }
-
+    
     string num, word1, word2, tag1, tag2;
     
     while(wordFile >> num >> word1 >> word2 >> tag1 >> tag2){
         
-        
+//        if(word1 == "night" || word2 == "night"){
+//            cout << "HERE" << endl;
+//        }
         if(isdigit(tag1[tag1.length()-1]) && isdigit(tag1[tag1.length()-2])){
             tag1.erase(tag1.end()-2, tag1.end());
         }
@@ -43,7 +48,23 @@ int main(){
             tag2.erase(tag2.end()-2, tag2.end());
         }
         
+        
         if(accept_pos.find(tag1) != accept_pos.end() && accept_pos.find(tag2) != accept_pos.end()){
+            
+            if(tag_word_count.find(tag1) == tag_word_count.end()){
+                tag_word_count[tag1] = 1;
+            }
+            else{
+                tag_word_count[tag1]++;
+            }
+            
+            if(tag_word_count.find(tag2) == tag_word_count.end()){
+                tag_word_count[tag2] = 1;
+            }
+            else{
+                tag_word_count[tag2]++;
+            }
+            
             
             if(word1.length() > 2 && word2.length() > 2){
                 if(word1 != "ing" && word2 != "ing"){
@@ -54,6 +75,13 @@ int main(){
             }
         }
         else{
+//            if(accept_pos.find(tag1) == accept_pos.end()){
+//                cout << word1 << " : " << tag1 << " REMOVED " << word2 << endl;
+//            }
+//            if(accept_pos.find(tag2) == accept_pos.end()){
+//                cout << word2 << " : " << tag2 << " REMOVED " << word1 << endl;
+//            }
+            
             if(accept_pos.find(tag1) != accept_pos.end()){
                 if(tags_found.find(tag2) == tags_found.end()){
                     tags_found.emplace(tag2);
@@ -68,11 +96,10 @@ int main(){
                 if(tags_found.find(tag2) == tags_found.end()){
                     tags_found.emplace(tag2);
                 }
+                
                 if(tags_found.find(tag1) == tags_found.end()){
                     tags_found.emplace(tag1);
                 }
-
-
             }
             
         }
@@ -91,9 +118,9 @@ int main(){
         outFile << collocates[i].first << "," << collocates[i].second << "," << freq[i] << endl;
     }
     
-    for(auto it: tags_found){
-        cout << it << endl;
+   for(auto it: tag_word_count){
+       cout << it.first<< " " << it.second << endl;
     }
     
 }
-*/
+

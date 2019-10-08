@@ -7,7 +7,7 @@
 
 #include "frequency_data.hpp"
 
-void read_frequency_data(unordered_map<string, string> &word_lemma_map, unordered_map<string, int> &lemma_freq_map, unordered_map<string, int> &freq_map){
+void read_frequency_data(unordered_map<string, int> &freq_map){
 
     
     //columns seperated by tab. ID w1 l1 freq
@@ -42,15 +42,15 @@ void read_frequency_data(unordered_map<string, string> &word_lemma_map, unordere
         getline(file, freq, '\t');
         getline(file, temp);
         
-        word_lemma_map[word] = lemma;
+        //word_lemma_map[word] = lemma;
         
         freq_map[word] = stoi(freq);
         
-        if(lemma_freq_map.find(lemma) != lemma_freq_map.end()){
-            lemma_freq_map[lemma] =  lemma_freq_map[lemma] + stoi(freq);
-        }
-        else{
-            lemma_freq_map[lemma] = stoi(freq);
-        }
+        //if(lemma_freq_map.find(lemma) != lemma_freq_map.end()){
+         //   lemma_freq_map[lemma] =  lemma_freq_map[lemma] + stoi(freq);
+        //}
+       // else{
+        //    lemma_freq_map[lemma] = stoi(freq);
+        //}
     }
 }

@@ -24,5 +24,7 @@
 
 using namespace std;
 
-void read_frequency_data(unordered_map<string, string> &word_lemma_map, unordered_map<string, int> &lemma_freq_map,unordered_map<string, int> &freq_map);
+void read_frequency_data(unordered_map<string, int> &freq_map);
+
+
 #endif /* frequency_data_hpp */
