@@ -15,5 +15,5 @@ Link to paper: soar.eecs.umich.edu/pubs/schatz_iccm18.pdf
 &ensp; FreeRecall: $ ./exeRAT <t or f for random order of questions> F start_attempts end_attempts database output smemParameters  ratProblemsTextFile <br/>
 &ensp; ex) $ ./exeRAT f F 1 20 finalNormalizedVersions/_9_20_2019_hbc_single_trash_normalized output/FR_hbc_single_10_08_2019 "smem --set spreading-use-only both" raw_144.txt <br/> 
 
-&ensp; Cued: $ ./exeRAT <t or f for random order of questions> C database output smemParameters ratProblemsTextFile <br/> 
-&ensp; ex)./exeRAT c F final_versions/COCA-TG_8_30_2019 output/cocaCued_10_08_2019 "smem --set spreading-use-only both" raw_144.txt <br/>
+&ensp;&ensp; Cued: $ ./exeRAT <t or f for random order of questions> C database output smemParameters ratProblemsTextFile <br/> 
+&ensp;&ensp; ex)./exeRAT c F final_versions/COCA-TG_8_30_2019 output/cocaCued_10_08_2019 "smem --set spreading-use-only both" raw_144.txt <br/>
