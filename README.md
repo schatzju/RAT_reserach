@@ -14,10 +14,10 @@ Link to paper: soar.eecs.umich.edu/pubs/schatz_iccm18.pdf
 
 
 **FreeRecall**: $ ./exeRAT f \<T or F for random order of questions\> start_attempts end_attempts database output smemParameters  ratProblemsTextFile <br/>
-ex) $ ./exeRAT f F 1 20 subRELEASE_10_8_2019_hbc_single_trash output/FR_hbc_single_sub_10_08_2019 "smem --set spreading-use-only both" raw_144.txt <br/> 
+ex) $ ./exeRAT f F 1 20 subRELEASE_10_8_2019_hbc_single_trash output/FR_hbc_single_sub_10_08_2019 "smem --set spreading-use-only both" RAT_sub_RELEASE.txt <br/> 
 
 **Cued**: $ ./exeRAT c \<T or F for random order of questions\> database output smemParameters ratProblemsTextFile <br/> 
-ex)./exeRAT c F subRELEASE_10_8_2019_hbc_single_trash output/FR_hbc_single_sub_10_08_2019 "smem --set spreading-use-only both" raw_144.txt <br/> 
+ex)./exeRAT c F subRELEASE_10_8_2019_hbc_single_trash output/FR_hbc_single_sub_10_08_2019 "smem --set spreading-use-only both" RAT_sub_RELEASE.txt <br/> 
 
 
 ## Files/Directories
