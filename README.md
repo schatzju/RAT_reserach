@@ -37,3 +37,22 @@ ex)./exeRAT c F subRELEASE_10_8_2019_hbc_single_trash output/FR_hbc_single_sub_1
 **RAT_sub_RELEASE.txt** The four RAT questions the sample data file in smem_script can answer
  
 Bowden, E. M., & Jung-Beeman, M. (2003). Normative datafor 144 compound remote associate problems. BehaviorResearch Methods, Instruments, & Computers,35(4), 634–639
+
+## How to run the Soar agents without the SML C++ script
+Go to RAT_research/models/cued_soar_agent or RAT_research/models/freeRecall_soar_agent <br/> 
+
+Open *load_cards_wm.soar* <br/> 
+On line 5 and line 17 change “io.input-link.board <board>” to “iox.input-link.board <board>”<br/> 
+*This changes the agent to work without the SML script and instead take the input from the initialization rule<br/> 
+
+*initialize.soar* <br/> 
+On line 44, 46, 48 you can specify which RAT item you would like the system to solve. This is instead of reading it in from the C++ script. Currently it will attempt the question “night” “wrist” and “stop”<br/> 
+
+*_load.soar* <br/> 
+Uncomment line 29 and 30 <br/> 
+<br/> 
+On line 29 specify the path to a .db backed up soar database file. Note that once you have run the agent with that database file once it will not work correctly again. Therefore, before every run of the agent I delete the database_cp.db file and make a copy of the database.db file named database_cp.db <br/> 
+
+Now you should be able to open soar, load in the *_load.soar* file and run the agent locally on one problem. 
+
+
