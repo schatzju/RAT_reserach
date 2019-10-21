@@ -43,16 +43,16 @@ Go to RAT_research/models/cued_soar_agent or RAT_research/models/freeRecall_soar
 
 Open *load_cards_wm.soar* <br/> 
 On line 5 and line 17 change “io.input-link.board <board>” to “iox.input-link.board <board>”<br/> 
-*This changes the agent to work without the SML script and instead take the input from the initialization rule<br/> 
+*This changes the agent to work with input specified in the initialization rule instead of from the io link<br/> 
 
 *initialize.soar* <br/> 
-On line 44, 46, 48 you can specify which RAT item you would like the system to solve. This is instead of reading it in from the C++ script. Currently it will attempt the question “night” “wrist” and “stop”<br/> 
+On line 44, 46, 48 you can specify which RAT item you would like the system to solve. Currently it will attempt the question “night” “wrist” and “stop”<br/> 
 
 *_load.soar* <br/> 
 Uncomment line 29 and 30 <br/> 
 <br/> 
-On line 29 specify the path to a .db backed up soar database file. Note that once you have run the agent with that database file once it will not work correctly again. Therefore, before every run of the agent I delete the database_cp.db file and make a copy of the database.db file named database_cp.db <br/> 
+On line 29 specify the path to a .db soar smem database file. Note that once you've used the database file even once it will not work correctly again. Therefore, before every run of the agent, I delete the database_cp.db file and re-make it from the orignal and unused database.db file <br/> 
 
-Now you should be able to open soar, load in the *_load.soar* file and run the agent locally on one problem. 
+Now you should be able to open soar, source the *_load.soar* file and run the agent locally. 
 
 
